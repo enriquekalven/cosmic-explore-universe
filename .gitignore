@@ -1,0 +1,21 @@
+# Dependencies & local scratch
+node_modules/
+scratch/
+*.log
+firebase-debug.log
+.firebase/
+.firebaserc
+
+# Environment & credentials (never commit)
+.env
+.env.*
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

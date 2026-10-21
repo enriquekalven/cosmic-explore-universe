@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; object-src 'none'; base-uri 'self'; worker-src 'self' blob:;"
+  />
+  <meta name="description" content="Cosmic Explorer 3D — a free, open, photoreal 3D journey from Earth and the Moon to the Voyager probes, nearby exoplanets, the Milky Way and the edge of the observable universe." />
+  <title>Cosmic Explorer 3D — From Earth & Moon to the Edge of the Universe</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+</head>
+<body>
+  <!-- WebGL universe -->
+  <canvas
+    id="cosmic-canvas"
+    aria-label="Interactive 3D Universe — drag to orbit, scroll or pinch to zoom, click any world to fly there"
+    tabindex="0"
+  ></canvas>
+  <!-- Projected labels & markers -->
+  <div id="label-layer" class="label-layer" aria-hidden="false"></div>
+
+  <!-- Loading screen -->
+  <div id="loading-screen" class="loading-screen" role="status" aria-live="polite">
+    <div class="loading-card">
+      <div class="loading-logo" aria-hidden="true">🚀</div>
+      <h1 class="loading-title">Cosmic Explorer 3D</h1>
+      <p id="loading-status" class="loading-status">Warming up the engines…</p>
+      <div class="loading-bar" aria-hidden="true"><div id="loading-bar-fill" class="loading-bar-fill"></div></div>
+      <p class="loading-hint">Real NASA &amp; ESO imagery • real orbits for today’s date • free &amp; open for every curious kid</p>
+    </div>
+  </div>
+
+  <!-- Top navigation & scale stepper -->
+  <header class="hud-header">
+    <div class="brand-cluster">
+      <div class="brand-logo" aria-hidden="true">🚀</div>
+      <div>
+        <h1 class="brand-title">Cosmic Explorer 3D</h1>
+        <p class="brand-subtitle">Free &amp; open interactive universe for curious kids</p>
+      </div>
+    </div>
+    <nav id="scale-stepper" class="scale-stepper" aria-label="Cosmic zoom scales"></nav>
+    <div class="header-actions">
+      <button id="btn-open-exoplanets" type="button" class="action-pill exo-btn" title="Browse and fly to all 6,451 confirmed NASA exoplanets">🪐 6,451 Exoplanets</button>
+      <button id="btn-start-tour" type="button" class="action-pill tour-btn">🧭 Guided Tour</button>
+      <button id="btn-open-quiz" type="button" class="action-pill quiz-btn">🏆 Space Quiz</button>
+      <button id="btn-toggle-theme" type="button" class="action-pill theme-btn" aria-pressed="false" title="Switch between Dark Cosmos and Light Star-Atlas Mode">☀️ Light Mode</button>
+      <button id="btn-toggle-panels" type="button" class="action-pill ghost-btn" aria-pressed="false" title="Hide panels for a clean view">🖼️ Clean View</button>
+    </div>
+  </header>
+
+  <!-- Quick target tracker -->
+  <section class="quick-tracker-bar" aria-label="Quick cosmic target tracker">
+    <div class="tracker-bar-left">
+      <span class="tracker-label">🎯 Fly to:</span>
+      <div id="quick-tracker-chips" class="tracker-chips"></div>
+    </div>
+    <div class="voyager-live-pill" title="Live heliocentric telemetry (click any spacecraft to fly there)">
+      <span class="pulse-dot" aria-hidden="true"></span>
+      <button id="btn-pill-roadster" type="button" class="live-pill-link"><strong>🚗 Roadster:</strong> <span id="live-roadster-dist">—</span></button>
+      <span class="divider">|</span>
+      <button id="btn-pill-v1" type="button" class="live-pill-link"><strong>Voyager 1:</strong> <span id="live-v1-dist">—</span></button>
+      <span class="divider">|</span>
+      <button id="btn-pill-v2" type="button" class="live-pill-link"><strong>Voyager 2:</strong> <span id="live-v2-dist">—</span></button>
+    </div>
+  </section>
+
+  <!-- Left panel: current scale + view options + tour -->
+  <aside class="hud-left-panel" aria-label="Current cosmic scale overview">
+    <div class="scale-card">
+      <div class="scale-card-eyebrow">CURRENT COSMIC SCALE</div>
+      <h2 id="current-scale-title" class="scale-card-title">Earth &amp; Moon</h2>
+      <div id="current-scale-range" class="scale-card-range">10,000 km – 1 million km</div>
+      <p id="current-scale-desc" class="scale-card-desc">Drag to orbit, scroll to zoom, click any world to fly there.</p>
+
+      <div class="view-toggles">
+        <button id="btn-toggle-orbits" type="button" class="toggle-chip active-toggle" aria-pressed="true">⭕ Orbits</button>
+        <button id="btn-toggle-labels" type="button" class="toggle-chip active-toggle" aria-pressed="true">🏷️ Labels</button>
+        <button id="btn-toggle-hz" type="button" class="toggle-chip active-toggle" aria-pressed="true">🌱 Habitable zones</button>
+        <button id="btn-toggle-scale" type="button" class="toggle-chip" aria-pressed="false" title="Explorer scale compresses distances so you can see everything. True scale shows the real emptiness of space.">📏 True scale</button>
+        <button id="btn-toggle-bloom" type="button" class="toggle-chip active-toggle" aria-pressed="true" title="Glow effect (turn off on slower computers)">✨ Glow</button>
+        <button id="btn-chip-theme" type="button" class="toggle-chip" aria-pressed="false" title="Switch between Dark Cosmos and Light Star-Atlas Mode">☀️ Light mode</button>
+      </div>
+
+      <div class="controls-hint">
+        <span>🖱️ <strong>Drag</strong> orbit</span>
+        <span>🔍 <strong>Scroll</strong> zoom</span>
+        <span>👆 <strong>Click</strong> fly to</span>
+      </div>
+    </div>
+
+    <div id="guided-tour-bar" class="guided-tour-card hidden" role="region" aria-live="polite">
+      <div class="tour-header">
+        <span class="tour-badge">🧭 AUTOPILOT COSMIC TOUR</span>
+        <button id="btn-tour-close" type="button" class="icon-close-btn" aria-label="Exit guided tour">✕</button>
+      </div>
+      <h3 id="tour-step-title" class="tour-title">Stop 1: Spaceship Earth</h3>
+      <p id="tour-step-desc" class="tour-desc"></p>
+      <div class="tour-controls">
+        <button id="btn-tour-prev" type="button" class="secondary-btn">⬅️ Previous</button>
+        <button id="btn-tour-next" type="button" class="primary-action-btn">Next stop ➡️</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right panel: inspector -->
+  <aside class="hud-right-inspector" aria-label="Selected cosmic object inspector">
+    <div class="inspector-header">
+      <span id="inspector-badge" class="inspector-badge">🌍 Where we live!</span>
+      <button id="btn-read-aloud" type="button" class="read-aloud-btn">🔊 Read aloud</button>
+    </div>
+    <h2 id="inspector-title" class="inspector-title">Planet Earth</h2>
+    <div id="inspector-pronounce" class="inspector-pronounce"></div>
+    <p id="inspector-summary" class="inspector-summary"></p>
+    <div id="inspector-voyager-live" class="voyager-live-box hidden" aria-live="polite"></div>
+    <div id="inspector-exoplanets" class="exoplanet-box hidden"></div>
+    <h3 class="section-subtitle">📊 Quick stats</h3>
+    <div id="inspector-stats-grid" class="stats-grid"></div>
+    <h3 class="section-subtitle">✨ Mind-blowing facts</h3>
+    <ul id="inspector-facts-list" class="fun-facts-list"></ul>
+    <h3 class="section-subtitle">🚀 How long to travel here?</h3>
+    <div id="inspector-travel-times" class="travel-times-box"></div>
+  </aside>
+
+  <!-- Bottom: time controls + zoom slider -->
+  <footer class="hud-bottom">
+    <div class="time-bar" aria-label="Simulation time controls">
+      <button id="btn-time-slower" type="button" class="time-btn" aria-label="Slow down time">⏪</button>
+      <button id="btn-time-pause" type="button" class="time-btn" aria-label="Pause or resume time">⏸️</button>
+      <button id="btn-time-faster" type="button" class="time-btn" aria-label="Speed up time">⏩</button>
+      <div class="time-readout">
+        <span id="time-speed-label" class="time-speed">Real time</span>
+        <span id="time-date-label" class="time-date">—</span>
+      </div>
+      <button id="btn-time-now" type="button" class="time-btn now-btn">Now</button>
+    </div>
+
+    <div class="hud-bottom-zoom" aria-label="Continuous cosmic zoom slider">
+      <button id="btn-zoom-in" type="button" class="zoom-step-btn" aria-label="Zoom in">➕ In</button>
+      <div class="zoom-slider-wrapper">
+        <div class="zoom-scale-markers" aria-hidden="true">
+          <span>🌍 Earth &amp; Moon</span>
+          <span>☀️ Solar System &amp; Voyagers</span>
+          <span>⭐ Nearby stars &amp; exoplanets</span>
+          <span>🌌 Milky Way</span>
+          <span>🕸️ Universe</span>
+        </div>
+        <input id="cosmic-zoom-slider" type="range" min="0" max="100" step="0.1" value="5.5" aria-label="Cosmic zoom level from Earth to the observable universe" />
+      </div>
+      <button id="btn-zoom-out" type="button" class="zoom-step-btn" aria-label="Zoom out">➖ Out</button>
+    </div>
+  </footer>
+
+  <button id="btn-credits" type="button" class="credits-btn">ℹ️ Credits &amp; data sources</button>
+
+  <!-- NASA Exoplanet Archive Explorer Modal -->
+  <div id="exoplanet-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="exo-modal-title">
+    <div class="modal-dialog exo-modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h2 id="exo-modal-title">🪐 NASA Exoplanet Archive — All 6,451 Confirmed Worlds</h2>
+          <p class="exo-modal-subtitle">Every confirmed exoplanet outside our Solar System (4,847 host star systems • 152 habitable-zone candidates) plotted at true 3D RA/Dec &amp; Gaia distance. Click any star or planet to materialize and fly there in 3D!</p>
+        </div>
+        <button id="btn-close-exoplanets" type="button" class="icon-close-btn" aria-label="Close Exoplanet Archive">✕</button>
+      </div>
+      <div class="exo-controls-row">
+        <input id="exo-search-input" type="search" class="exo-search-input" placeholder="Search 6,451 exoplanets or host stars (e.g. Kepler-186, TOI-700, K2-18, 55 Cnc, Wasp, Gliese)…" aria-label="Search exoplanets or host stars" />
+        <button id="btn-exo-view-cloud" type="button" class="secondary-btn exo-cloud-btn">🔭 View 3D Kepler/TESS Cone</button>
+      </div>
+      <div id="exo-filter-bar" class="exo-filter-bar" role="tablist" aria-label="Filter exoplanet systems">
+        <button type="button" class="exo-filter-pill active" data-filter="all">All 4,847 Systems (6,451 Planets)</button>
+        <button type="button" class="exo-filter-pill" data-filter="hz">🌱 Habitable Zone (152)</button>
+        <button type="button" class="exo-filter-pill" data-filter="multi">🪐 Multi-Planet Systems (3+)</button>
+        <button type="button" class="exo-filter-pill" data-filter="near">📍 Nearest (&lt; 65 ly)</button>
+        <button type="button" class="exo-filter-pill" data-filter="kepler">🔭 Kepler &amp; TESS Worlds</button>
+      </div>
+      <div id="exo-results-summary" class="exo-results-summary"></div>
+      <div id="exo-results-list" class="exo-results-list" role="list"></div>
+    </div>
+  </div>
+
+  <!-- Quiz modal -->
+  <div id="quiz-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="quiz-modal-title">👩‍🚀 Junior Astronaut Cosmic Challenge</h2>
+        <button id="btn-close-quiz" type="button" class="icon-close-btn" aria-label="Close space quiz">✕</button>
+      </div>
+      <div id="quiz-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Credits modal -->
+  <div id="credits-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="credits-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="credits-title">Credits &amp; data sources</h2>
+        <button id="btn-close-credits" type="button" class="icon-close-btn" aria-label="Close credits">✕</button>
+      </div>
+      <div class="modal-body credits-body">
+        <p>Cosmic Explorer 3D is free and open source (MIT). It renders real data:</p>
+        <ul>
+          <li><strong>Earth:</strong> NASA Visible Earth Blue Marble (land/ocean), Black Marble 2016 (night lights), NASA cloud composite — public domain.</li>
+          <li><strong>Moon:</strong> Solar System Scope color map (CC BY 4.0); NASA SVS LRO LOLA elevation.</li>
+          <li><strong>Sun &amp; planets:</strong> Solar System Scope texture maps — CC BY 4.0 (solarsystemscope.com/textures).</li>
+          <li><strong>Night sky:</strong> ESO / S. Brunier Milky Way panorama (eso0932a) — CC BY 4.0.</li>
+          <li><strong>Orbits:</strong> JPL approximate Keplerian elements (1800–2050); Meeus lunar theory; IAU rotation elements.</li>
+          <li><strong>Voyager 1, Voyager 2 &amp; Starman’s Tesla Roadster:</strong> NASA/JPL Horizons trajectory &amp; osculating elements (`-31`, `-32`, `-143205` / `2018-017A`).</li>
+          <li><strong>All 6,451 Confirmed Exoplanets:</strong> NASA Exoplanet Archive (`pscomppars` TAP catalog, 6,451 planets across 4,847 host systems) + Hipparcos/Gaia 3D coordinates.</li>
+          <li><strong>Engine:</strong> three.js (MIT). Exoplanet surfaces, the Milky Way particle model and the cosmic web are artist’s impressions built from real structure data.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

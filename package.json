@@ -1,0 +1,13 @@
+{
+  "name": "cosmic-explorer-3d",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Free, open, kid-friendly hyper-realistic 3D universe explorer (Earth & Moon → Solar System & Voyagers → nearby exoplanets → Milky Way → Universe).",
+  "license": "MIT",
+  "scripts": {
+    "vendor": "node scripts/vendor-three.mjs",
+    "textures": "bash scripts/fetch-textures.sh",
+    "start": "python3 server.py"
+  }
+}
