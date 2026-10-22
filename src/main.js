@@ -22,7 +22,10 @@ import {
 } from './analytics.js';
 import {
   detectInitialLanguage,
-  normalizeLang,
+  gateLang,
+  getAvailableLanguages,
+  isPreviewI18n,
+  LANG_META,
   getUI,
   getQuickTargets,
   getMarvelCategories,
@@ -276,8 +279,8 @@ class CosmicExplorerApp {
         inspector.classList.toggle('is-collapsed-mobile', !this.mobileInspectorExpanded);
         toggleBtn.setAttribute('aria-expanded', String(this.mobileInspectorExpanded));
         toggleBtn.textContent = this.mobileInspectorExpanded
-          ? this.ui.mobileHideBtn || '▼ Hide'
-          : this.ui.mobileDetailsBtn || '▲ Details';
+          ? this.ui.mobileDetailsCollapse
+          : this.ui.mobileDetailsExpand;
       });
     }
 
@@ -316,9 +319,17 @@ class CosmicExplorerApp {
     const tracker = document.querySelector('.quick-tracker-bar');
     if (!header || !tracker) return;
 
+    const isNarrow = window.innerWidth <= 768;
+    const marvelTab = $('btn-universe-marvel');
+    if (marvelTab && this.ui) {
+      marvelTab.textContent = isNarrow
+        ? this.ui.universeMarvelTabShort || this.ui.universeMarvelTab
+        : this.ui.universeMarvelTab;
+    }
+
     const headerRect = header.getBoundingClientRect();
     if (headerRect.height <= 0) return;
-    const gap = window.innerWidth <= 768 ? 6 : 8;
+    const gap = isNarrow ? 6 : 8;
     const headerBottom = Math.round(headerRect.bottom + gap);
 
     const rootRule = document.styleSheets[0]?.cssRules?.[0];
@@ -334,19 +345,23 @@ class CosmicExplorerApp {
   _initLanguageSwitcher() {
     const switcher = $('lang-switcher');
     if (!switcher) return;
-    switcher.querySelectorAll('.lang-btn').forEach((btn) => {
-      const bLang = btn.dataset.lang;
-      const isAct = bLang === this.lang;
-      btn.classList.toggle('active', isAct);
-      btn.setAttribute('aria-pressed', String(isAct));
-      btn.addEventListener('click', () => {
-        this.setLanguage(bLang, { updateHash: true, track: true });
-      });
+    this.preview = isPreviewI18n();
+    const buttons = getAvailableLanguages(this.preview).map((code) => {
+      const meta = LANG_META[code] || { label: code.toUpperCase(), title: code };
+      const btn = el('button', `lang-btn${code === this.lang ? ' active' : ''}`, meta.label);
+      btn.type = 'button';
+      btn.dataset.lang = code;
+      btn.lang = code;
+      btn.title = meta.title;
+      btn.setAttribute('aria-pressed', String(code === this.lang));
+      btn.addEventListener('click', () => this.setLanguage(code, { updateHash: true, track: true }));
+      return btn;
     });
+    switcher.replaceChildren(...buttons);
   }
 
   setLanguage(lang, { updateHash = true, track = true } = {}) {
-    const nextLang = normalizeLang(lang);
+    const nextLang = gateLang(lang, this.preview);
     const changed = nextLang !== this.lang;
     this.lang = nextLang;
     document.documentElement.lang = LANG_BCP47[nextLang] || nextLang;
@@ -415,6 +430,7 @@ class CosmicExplorerApp {
   _renderStaticChrome() {
     const ui = this.ui;
     const isMarvel = this.universeMode === 'marvel';
+    const isNarrow = window.innerWidth <= 768;
     document.title = ui.pageTitle || `${ui.brandTitle} — ${ui.brandSubtitle}`;
 
     const setTxt = (id, val) => {
@@ -430,13 +446,14 @@ class CosmicExplorerApp {
 
     const nasaTab = $('btn-universe-nasa');
     if (nasaTab) {
-      nasaTab.textContent = ui.universeNasaBtn || '🔭 NASA Cosmos';
-      nasaTab.title = ui.universeNasaTitle || '';
+      nasaTab.textContent = ui.universeNasaTab;
+      nasaTab.title = ui.universeNasaTab.replace(/^🔭\s*/, '');
     }
     const marvelTab = $('btn-universe-marvel');
     if (marvelTab) {
-      marvelTab.textContent = ui.universeMarvelBtn || '⚡ Guardians & Thor';
-      marvelTab.title = ui.universeMarvelTitle || '';
+      marvelTab.textContent = isNarrow ? ui.universeMarvelTabShort || ui.universeMarvelTab : ui.universeMarvelTab;
+      marvelTab.title = ui.universeMarvelTabFull || ui.universeMarvelTab;
+      marvelTab.setAttribute('aria-label', ui.universeMarvelTabFull || ui.universeMarvelTab);
     }
 
     const canvas = $('cosmic-canvas');
@@ -471,14 +488,14 @@ class CosmicExplorerApp {
 
     const mobileOptBtn = $('btn-mobile-options');
     if (mobileOptBtn) {
-      mobileOptBtn.title = ui.mobileOptionsTitle || 'View options';
+      mobileOptBtn.title = ui.mobileOptionsTitle;
     }
 
     const toggleInspBtn = $('btn-toggle-inspector');
     if (toggleInspBtn) {
       toggleInspBtn.textContent = this.mobileInspectorExpanded
-        ? ui.mobileHideBtn || '▼ Hide'
-        : ui.mobileDetailsBtn || '▲ Details';
+        ? ui.mobileDetailsCollapse
+        : ui.mobileDetailsExpand;
     }
 
     setTxt('tracker-fly-label', ui.flyToLabel);
@@ -582,6 +599,9 @@ class CosmicExplorerApp {
         ul.appendChild(li);
       }
       creditsBody.appendChild(ul);
+      if (ui.marvelCreditsDisclaimer) {
+        creditsBody.appendChild(el('p', 'credits-disclaimer', ui.marvelCreditsDisclaimer));
+      }
     }
   }
 
@@ -663,7 +683,7 @@ class CosmicExplorerApp {
       this.setLanguage(hashLang, { updateHash: false, track: false });
     }
     const u = params.get('u');
-    if (u === 'marvel' && this.universeMode !== 'marvel') {
+    if ((u === 'marvel' || u === 'guardians') && this.universeMode !== 'marvel') {
       this.setUniverseMode('marvel', { updateHash: false, track: false });
     } else if (u === 'nasa' && this.universeMode !== 'nasa') {
       this.setUniverseMode('nasa', { updateHash: false, track: false });
@@ -885,7 +905,8 @@ class CosmicExplorerApp {
     const speedLabels = this.ui.timeSpeeds || [];
     const label = speedLabels[idx] || TIME_SPEEDS[idx].label;
     $('time-speed-label').textContent = this.engine.paused ? `${this.ui.timePausedPrefix} • ${label}` : label;
-    $('time-date-label').textContent = formatDateUTC(this.engine.state.dateMs);
+    const locale = LANG_BCP47[this.lang] || 'en-US';
+    $('time-date-label').textContent = formatDateUTC(this.engine.state.dateMs, locale);
   }
 
   _initModals() {
@@ -1151,10 +1172,12 @@ class CosmicExplorerApp {
               ? 'roadster'
               : null;
       if (key && t[key]) {
+        const locale = LANG_BCP47[this.lang] || 'en-US';
+        const fmtInt = (n) => new Intl.NumberFormat(locale).format(Math.round(n));
         live.textContent =
           key === 'roadster'
-            ? ui.fromSunKmAU(Math.round(t.roadster.distanceKm).toLocaleString(), t.roadster.distanceAU)
-            : ui.fromSunKm(Math.round(t[key].distanceKm).toLocaleString());
+            ? ui.fromSunKmAU(fmtInt(t.roadster.distanceKm), t.roadster.distanceAU)
+            : ui.fromSunKm(fmtInt(t[key].distanceKm));
       }
     }
   }
@@ -1198,15 +1221,17 @@ class CosmicExplorerApp {
     if (obj.isVoyager && this.universeMode === 'nasa') {
       voyagerBox.classList.remove('hidden');
       const tel = getVoyagerLiveTelemetry(this.engine ? this.engine.state.dateMs : Date.now())[obj.voyagerKey];
+      const locale = LANG_BCP47[this.lang] || 'en-US';
+      const fmtInt = (n) => new Intl.NumberFormat(locale).format(Math.round(n));
       if (obj.voyagerKey === 'roadster' && tel) {
         voyagerBox.appendChild(el('div', 'voyager-live-header', ui.roadsterLiveHeader));
-        const km = el('div', 'voyager-live-km', ui.fromSunKmAU(Math.round(tel.distanceKm).toLocaleString(), tel.distanceAU));
+        const km = el('div', 'voyager-live-km', ui.fromSunKmAU(fmtInt(tel.distanceKm), tel.distanceAU));
         km.id = 'inspector-live-km';
         voyagerBox.appendChild(km);
         voyagerBox.appendChild(el('div', 'voyager-live-sub', ui.roadsterLiveSub(tel)));
       } else if (tel) {
         voyagerBox.appendChild(el('div', 'voyager-live-header', ui.voyagerLiveHeader));
-        const km = el('div', 'voyager-live-km', ui.fromSunKm(Math.round(tel.distanceKm).toLocaleString()));
+        const km = el('div', 'voyager-live-km', ui.fromSunKm(fmtInt(tel.distanceKm)));
         km.id = 'inspector-live-km';
         voyagerBox.appendChild(km);
         voyagerBox.appendChild(el('div', 'voyager-live-sub', ui.voyagerLiveSub(tel)));
@@ -1305,7 +1330,8 @@ class CosmicExplorerApp {
     };
     const langRegex = regexMap[lang] || /^en(-|_|$)/i;
     const matchingVoices = voices.filter((v) => langRegex.test(v.lang));
-    const pool = matchingVoices.length ? matchingVoices : voices;
+    if (!matchingVoices.length) return null;
+    const pool = matchingVoices;
 
     const scoreVoice = (v) => {
       const name = `${v.name} ${v.voiceURI}`;
@@ -1320,7 +1346,8 @@ class CosmicExplorerApp {
         if (/es-ES|es_ES|es-MX|es_MX|es-US|es_US/i.test(v.lang)) s += 12;
       } else if (lang === 'zh') {
         if (/Google 普通话|Tingting|Ting-Ting|Meijia|Sin-ji|Xiaoxiao|Yunxi|Yunjian/i.test(name)) s += 36;
-        if (/zh-CN|zh_CN|cmn-CN/i.test(v.lang)) s += 14;
+        if (/zh-CN|zh_CN|cmn-CN|cmn-Hans/i.test(v.lang)) s += 20;
+        else if (/zh-TW|zh-HK/i.test(v.lang)) s += 8;
       } else if (lang === 'ja') {
         if (/Google 日本語|Kyoko|Otoya|Nanami|Keita/i.test(name)) s += 36;
         if (/ja-JP|ja_JP/i.test(v.lang)) s += 14;
@@ -1329,7 +1356,8 @@ class CosmicExplorerApp {
         if (/ko-KR|ko_KR/i.test(v.lang)) s += 14;
       } else if (lang === 'pt') {
         if (/Google português|Luciana|Joana|Francisca|Antonio/i.test(name)) s += 36;
-        if (/pt-BR|pt_BR|pt-PT|pt_PT/i.test(v.lang)) s += 14;
+        if (/pt-BR|pt_BR/i.test(v.lang)) s += 22;
+        else if (/pt-PT|pt_PT/i.test(v.lang)) s += 10;
       } else if (lang === 'fr') {
         if (/Google français|Amélie|Amelie|Thomas|Audrey|Denise|Henri/i.test(name)) s += 36;
         if (/fr-FR|fr_FR|fr-CA|fr_CA/i.test(v.lang)) s += 14;
@@ -1502,22 +1530,40 @@ class CosmicExplorerApp {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const cleaned = this._cleanSpeechProsody(text, lang);
-    const u = new SpeechSynthesisUtterance(cleaned);
-    u.lang = LANG_BCP47[lang] || 'en-US';
+    if (!cleaned) return;
+    const rawSentences = cleaned.split(/(?<=[.!?。！？])\s*/u).filter(Boolean);
+    const chunks = [];
+    for (const sentence of rawSentences) {
+      if (chunks.length && chunks[chunks.length - 1].length + 1 + sentence.length <= 180) {
+        chunks[chunks.length - 1] += ` ${sentence}`;
+      } else {
+        chunks.push(sentence);
+      }
+    }
+    if (!chunks.length) chunks.push(cleaned);
     const bestVoice = this._pickBestBrowserVoice(lang);
-    if (bestVoice) u.voice = bestVoice;
-    u.rate = 0.96;
-    u.pitch = 1.0;
+    const bcp47 = LANG_BCP47[lang] || 'en-US';
     const btn = $('btn-read-aloud');
-    u.onstart = () => {
-      this.isSpeaking = true;
-      btn.textContent = this.ui.stopReading;
-    };
-    u.onend = u.onerror = () => {
-      this.isSpeaking = false;
-      btn.textContent = this.ui.readAloud;
-    };
-    window.speechSynthesis.speak(u);
+    chunks.forEach((chunkText, idx) => {
+      const u = new SpeechSynthesisUtterance(chunkText);
+      u.lang = bcp47;
+      if (bestVoice) u.voice = bestVoice;
+      u.rate = 0.96;
+      u.pitch = 1.0;
+      if (idx === 0) {
+        u.onstart = () => {
+          this.isSpeaking = true;
+          btn.textContent = this.ui.stopReading;
+        };
+      }
+      if (idx === chunks.length - 1) {
+        u.onend = u.onerror = () => {
+          this.isSpeaking = false;
+          btn.textContent = this.ui.readAloud;
+        };
+      }
+      window.speechSynthesis.speak(u);
+    });
   }
 
   stopSpeech() {
@@ -1541,9 +1587,14 @@ class CosmicExplorerApp {
     const questions = getSpaceQuizQuestions(this.lang, this.universeMode);
     const ui = this.ui;
     if (this.quizIndex >= questions.length) {
-      container.appendChild(el('div', 'quiz-trophy', this.universeMode === 'marvel' ? '⚡🛡️🚀' : '👩‍🚀🏆👨‍🚀'));
-      container.appendChild(el('h3', 'quiz-complete-title', ui.quizCompleteTitle(this.quizScore, questions.length)));
-      container.appendChild(el('p', 'quiz-complete-msg', ui.quizCompleteMsg));
+      const isMarvel = this.universeMode === 'marvel';
+      const completeTitle = isMarvel && ui.marvelQuizCompleteTitle
+        ? ui.marvelQuizCompleteTitle(this.quizScore, questions.length)
+        : ui.quizCompleteTitle(this.quizScore, questions.length);
+      const completeMsg = isMarvel && ui.marvelQuizCompleteMsg ? ui.marvelQuizCompleteMsg : ui.quizCompleteMsg;
+      container.appendChild(el('div', 'quiz-trophy', isMarvel ? '⚡🛡️🚀' : '👩‍🚀🏆👨‍🚀'));
+      container.appendChild(el('h3', 'quiz-complete-title', completeTitle));
+      container.appendChild(el('p', 'quiz-complete-msg', completeMsg));
       const again = el('button', 'primary-action-btn', ui.quizPlayAgainBtn);
       again.type = 'button';
       again.addEventListener('click', () => {
@@ -1613,7 +1664,8 @@ window.addEventListener('DOMContentLoaded', () => {
     new CosmicExplorerApp();
   } catch (err) {
     const status = document.getElementById('loading-status');
-    if (status) status.textContent = 'Sorry — your browser could not start WebGL. Try Chrome, Edge, Firefox or Safari on a computer or recent phone.';
+    const ui = getUI(detectInitialLanguage());
+    if (status) status.textContent = ui.webglError || 'Sorry — your browser could not start WebGL. Try Chrome, Edge, Firefox or Safari on a computer or recent phone.';
     console.error('Cosmic Explorer failed to start');
     throw err;
   }

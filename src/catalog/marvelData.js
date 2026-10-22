@@ -644,14 +644,14 @@ export const MARVEL_OBJECTS = {
   // =========================================================================
   sakaar: {
     id: 'sakaar',
-    name: 'Sakaar & The Devil’s Anus Wormhole',
+    name: 'Sakaar & The Grand Magnetar Wormhole',
     pronunciation: 'suh-KAR',
     category: 'Wormhole-Ringed Gladiator Planet',
     scaleIndex: 3,
     badge: '🌀 Thor, Hulk, Valkyrie & Korg’s Arena!',
     color: '#2dd4bf',
     kidSummary:
-      'Sakaar is a vibrant red, gold, and teal planet surrounded by dozens of swirling cosmic wormholes—where Thor teamed up with the Hulk ("He’s a friend from work!"), Valkyrie, Korg, and Loki to escape aboard the Commodore through the giant magnetar wormhole nicknamed "The Devil’s Anus"! Real-Science Connection: Sakaar’s giant vortex is a visual model of a traversable Einstein-Rosen Wormhole paired with the intense magnetic fields of a Magnetar (the most magnetic stars in the universe)!',
+      'Sakaar is a vibrant red, gold, and teal planet surrounded by dozens of swirling cosmic wormholes—where Thor teamed up with the Hulk ("He’s a friend from work!"), Valkyrie, Korg, and Loki to escape aboard the Commodore through the giant high-gravity Grand Magnetar Wormhole! Real-Science Connection: Sakaar’s giant vortex is a visual model of a traversable Einstein-Rosen Wormhole paired with the intense magnetic fields of a Magnetar (the most magnetic stars in the universe)!',
     quickStats: [
       { label: 'Orbital Phenomenon', value: 'Surrounded by 18+ Swirling Spacetime Wormholes' },
       { label: 'Revengers Team', value: 'Thor, Hulk (Bruce Banner), Valkyrie, Loki, Korg & Miek' },
@@ -1272,7 +1272,7 @@ export const MARVEL_OBJECTS_ZH = {
     travelTimes: {
       light: '距地球表面仅 0.02 光秒',
       jumpPoint: '通过六边形空间跳跃点可跨星系瞬间抵达',
-      bifrost: '通过暴风战斧召唤彩虹桥仅需 0.5 秒'
+      bifrost: '通过风暴战斧召唤彩虹桥仅需 0.5 秒'
     }
   },
 
@@ -1321,7 +1321,7 @@ export const MARVEL_OBJECTS_ZH = {
     travelTimes: {
       light: '通过彩虹桥虫洞可在数秒内跨越星系',
       jumpPoint: '通过宇宙空间跳跃网需 3 次六边形跃迁',
-      bifrost: '海姆达尔或暴风战斧可瞬间开启通道'
+      bifrost: '海姆达尔或风暴战斧可瞬间开启通道'
     }
   },
 
@@ -1329,24 +1329,24 @@ export const MARVEL_OBJECTS_ZH = {
     name: '尼达维勒 (中子星戴森环神兵熔炉)',
     pronunciation: 'Ní-dá-wéi-lè',
     category: '矮人族戴森环恒星熔炉 (九大国度)',
-    badge: '🔨 雷神之锤与暴风战斧的锻造地！',
+    badge: '🔨 雷神之锤与风暴战斧的锻造地！',
     kidSummary:
-      '尼达维勒是九大国度中传奇的矮人族锻造圣地——矮人王艾崔利用一颗垂死恒星的狂暴核心能量，在这里锻造出了雷神之锤姆乔尔尼尔、暴风战斧（格鲁特用自己的手臂化作斧柄！）以及无限手套！真实科学连接：尼达维勒完美结合了两大真实天体物理学奇观：中心是一颗直径仅 20 公里、一茶匙物质就重达 10 亿吨的“中子星/脉冲星”，外围则是物理学家弗里曼·戴森提出的“戴森环”巨型结构！',
+      '尼达维勒是九大国度中传奇的矮人族锻造圣地——矮人王艾崔利用一颗垂死恒星的狂暴核心能量，在这里锻造出了雷神之锤姆乔尔尼尔、风暴战斧（格鲁特用自己的手臂化作斧柄！）以及无限手套！真实科学连接：尼达维勒完美结合了两大真实天体物理学奇观：中心是一颗直径仅 20 公里、一茶匙物质就重达 10 亿吨的“中子星/脉冲星”，外围则是物理学家弗里曼·戴森提出的“戴森环”巨型结构！',
     quickStats: [
       { label: '天体工程奇观', value: '环绕高速自转中子星的三重机械戴森环 (Dyson Ring)' },
       { label: '传奇锻造小队', value: '矮人王艾崔、雷神索尔、火箭浣熊（驾驶太空舱）与少年格鲁特' },
-      { label: '不朽神兵', value: '雷神之锤 (Mjolnir)、暴风战斧 (Stormbreaker) 与无限手套' },
+      { label: '不朽神兵', value: '雷神之锤 (Mjolnir)、风暴战斧 (Stormbreaker) 与无限手套' },
       { label: '真实科学对应', value: '中子星/脉冲星 (密度 10¹⁴ g/cm³) + 弗里曼·戴森环 (1960)' }
     ],
     funFacts: [
       '在《复仇者联盟3》中，当尼达维勒的巨型星环结冰卡死时，火箭浣熊驾驶小太空舱配合索尔甩动缆绳，硬生生拉动了行星级星环并重新点燃恒星喷流！',
-      '少年格鲁特放下游戏机，举起滚烫的乌鲁神钢斧刃，用自己的树枝手臂生长连接成暴风战斧的握柄，拯救了索尔的生命。',
+      '少年格鲁特放下游戏机，举起滚烫的乌鲁神钢斧刃，用自己的树枝手臂生长连接成风暴战斧的握柄，拯救了索尔的生命。',
       '真实天体物理：大质量恒星超新星爆发后坍缩成中子星，磁场比地球强上万亿倍，两极会喷射出高能电磁束——就像尼达维勒熔炉导引的恒星光束一样！'
     ],
     travelTimes: {
       light: '中子星磁极等离子体光束直达熔炉核心',
       jumpPoint: '乘贝纳塔号可分离太空舱约 18 小时',
-      bifrost: '暴风战斧铸成后瞬间召唤彩虹桥飞抵地球瓦坎达！'
+      bifrost: '风暴战斧铸成后瞬间召唤彩虹桥飞抵地球瓦坎达！'
     }
   },
 
@@ -1399,22 +1399,22 @@ export const MARVEL_OBJECTS_ZH = {
   },
 
   knowhere: {
-    name: '虚无知地 Knowhere (天神组头骨与护卫队总部)',
+    name: '虚无之地 Knowhere (天神族头骨与护卫队总部)',
     pronunciation: 'Xū-wú Zhī Dì (NOH-wair)',
-    category: '远古天神组巨大头骨空间站 & 银河护卫队总部',
+    category: '远古天神族巨大头骨空间站 & 银河护卫队总部',
     badge: '💀 银河护卫队的大本营！',
     kidSummary:
-      '虚无知地（Knowhere）是一座建造在远古天神组巨大断头颅骨内部的繁华太空前哨站，漂浮在五彩斑斓的星云之中——如今它已成为银河护卫队（火箭浣熊队长、巨型格鲁特、太空狗科斯莫、克拉格林与亚当术士）温馨的官方总部！真实科学连接：虚无知地所在的绚丽星云对应真实宇宙中的“行星状星云”与“超新星遗迹”（如著名的骷髅星云 NGC 246 和上帝之眼螺旋星云 NGC 7293），恒星在那里将钙、铁、金等元素播撒到宇宙中！',
+      '虚无之地（Knowhere）是一座建造在远古天神族巨大断头颅骨内部的繁华太空前哨站，漂浮在五彩斑斓的星云之中——如今它已成为银河护卫队（火箭浣熊队长、巨型格鲁特、太空狗科斯莫、克拉格林与亚当术士）温馨的官方总部！真实科学连接：虚无之地所在的绚丽星云对应真实宇宙中的“行星状星云”与“超新星遗迹”（如著名的骷髅星云 NGC 246 和上帝之眼螺旋星云 NGC 7293），恒星在那里将钙、铁、金等元素播撒到宇宙中！',
     quickStats: [
-      { label: '结构与规模', value: '漂浮在绚丽星云中的远古天神组头骨（跨度约 16 公里）' },
+      { label: '结构与规模', value: '漂浮在绚丽星云中的远古天神族头骨（跨度约 16 公里）' },
       { label: '常驻护卫队员', value: '火箭浣熊、格鲁特、太空狗科斯莫、星爵、星云与德拉克斯' },
       { label: '无限宝石渊源', value: '🔴 以太粒子（现实宝石）曾由收藏家蒂万在此保管' },
       { label: '真实科学对应', value: '行星状星云与超新星遗迹（骷髅星云 NGC 246 / 螺旋星云）' }
     ],
     funFacts: [
-      '在《银河护卫队：圣诞特别篇》和《银河护卫队3》中，护卫队从收藏家手中买下了虚无知地，并在太空狗科斯莫的念力帮助下将它改造成了充满音乐与欢笑的家园！',
-      '天神组头骨的眼眶港湾与颅腔内部纵横交错着失重采矿铁轨和黄色球形工程舱。',
-      '真实天体物理：正如卡尔·萨根所说“我们皆为星尘”——我们骨骼里的钙和血液里的铁，全都诞生于像虚无知地星云那样真实的恒星熔炉！'
+      '在《银河护卫队：圣诞特别篇》和《银河护卫队3》中，护卫队从收藏家手中买下了虚无之地，并在太空狗科斯莫的念力帮助下将它改造成了充满音乐与欢笑的家园！',
+      '天神族头骨的眼眶港湾与颅腔内部纵横交错着失重采矿铁轨和黄色球形工程舱。',
+      '真实天体物理：正如卡尔·萨根所说“我们皆为星尘”——我们骨骼里的钙和血液里的铁，全都诞生于像虚无之地星云那样真实的恒星熔炉！'
     ],
     travelTimes: {
       light: '位于仙女座星系边缘裂隙带',
@@ -1506,11 +1506,11 @@ export const MARVEL_OBJECTS_ZH = {
     quickStats: [
       { label: '故事核心', value: '火箭浣熊的身世起源（“我叫火箭，火箭浣熊。”）' },
       { label: '轨道地标', value: '金字塔形阿瑞忒星舰与镜像海陆分布' },
-      { label: '护卫队壮举', value: '全员联手救出所有孩子与整船小动物，带回虚无知地！' },
+      { label: '护卫队壮举', value: '全员联手救出所有孩子与整船小动物，带回虚无之地！' },
       { label: '真实科学对应', value: '日地拉格朗日点 (L1–L5) 与系外行星生物特征识别' }
     ],
     funFacts: [
-      '在《银河护卫队3》高潮，护卫队不仅救出了飞船上的所有孩童，还把数百只小浣熊、小狗和太空动物全部安全接回了虚无知地！',
+      '在《银河护卫队3》高潮，护卫队不仅救出了飞船上的所有孩童，还把数百只小浣熊、小狗和太空动物全部安全接回了虚无之地！',
       '真实天体物理：任何行星与恒星之间都存在 5 个引力平衡的“拉格朗日点”（L1–L5），NASA 的詹姆斯·韦伯太空望远镜就运行在日地 L2 点上！'
     ],
     travelTimes: {
@@ -1619,12 +1619,12 @@ export const MARVEL_OBJECTS_ZH = {
   ego: {
     name: '活体星球伊戈 Ego (银河护卫队2)',
     pronunciation: 'Yī-gē Huó-tǐ Xīng-qiú',
-    category: '生物发光天神组活体行星',
+    category: '生物发光天神族活体行星',
     badge: '🧠 拥有行星级发光神经网络的天神核心！',
     kidSummary:
-      '伊戈是一颗由远古天神组大脑核心历经数百万年凝聚物质形成的活体星球，内部遍布瑰丽的生物发光神经脉络洞穴与彩虹森林——最终格鲁特宝宝抱着炸弹深入行星核心，与火箭浣熊、勇度、星爵、卡魔拉、德拉克斯和螳螂女一起拯救了整个银河系！真实科学连接：在真实科学中，天体生物学家正利用詹姆斯·韦伯太空望远镜分析系外行星大气光谱中的“生物特征（Biosignatures，如氧气、甲烷与生物荧光）”来寻找外星生命！',
+      '伊戈是一颗由远古天神族大脑核心历经数百万年凝聚物质形成的活体星球，内部遍布瑰丽的生物发光神经脉络洞穴与彩虹森林——最终格鲁特宝宝抱着炸弹深入行星核心，与火箭浣熊、勇度、星爵、卡魔拉、德拉克斯和螳螂女一起拯救了整个银河系！真实科学连接：在真实科学中，天体生物学家正利用詹姆斯·韦伯太空望远镜分析系外行星大气光谱中的“生物特征（Biosignatures，如氧气、甲烷与生物荧光）”来寻找外星生命！',
     quickStats: [
-      { label: '天体分类', value: '天神组生物发光行星级巨型结构' },
+      { label: '天体分类', value: '天神族生物发光行星级巨型结构' },
       { label: '《银护2》英雄', value: '格鲁特宝宝、火箭浣熊、勇度、星爵、卡魔拉、德拉克斯与螳螂女' },
       { label: '核心弱点', value: '地心深处的生物发光大脑核心（被格鲁特宝宝安放定时炸弹！）' },
       { label: '真实科学对应', value: '系外行星大气生物特征光谱 (JWST) 与海洋生物发光现象' }
@@ -1673,7 +1673,7 @@ export const MARVEL_OBJECTS_ZH = {
       '在漫威宇宙最宏大的尺度上，矗立着浑身赤红、拥有六只发光星眸的“审判者阿里瑟姆（Arishem the Prime Celestial）”——正是他在宇宙之初创造并点燃了第一批恒星与星系；他身边环绕着六颗璀璨的无限宝石（空间/蓝、心灵/黄、现实/红、力量/紫、时间/绿、灵魂/橙）以及洛基编织的金色多元宇宙世界树！真实科学连接：正如王和收藏家所说：“在宇宙创生之前存在着六个奇点；大爆炸将宇宙带入现实，这些奇点的残余凝聚成了无限宝石。”在真实宇宙学中，这对应 138 亿年前的“宇宙大爆炸（Big Bang）”与点燃“宇宙黎明”的第一代恒星（第三星族星）！',
     quickStats: [
       { label: '六颗无限宝石', value: '🔵 空间 • 🟡 心灵 • 🔴 现实 • 🟣 力量 • 🟢 时间 • 🟠 灵魂' },
-      { label: '首席天神组', value: '审判者阿里瑟姆（宇宙第一批恒星与星系的缔造者）' },
+      { label: '首席天神族', value: '审判者阿里瑟姆（宇宙第一批恒星与星系的缔造者）' },
       { label: '多元宇宙枢纽', value: '洛基在时间尽头编织的金色多元宇宙世界树 (Yggdrasil)' },
       { label: '真实科学对应', value: '宇宙大爆炸奇点 (138亿年前)、四大基本相互作用力与第一代恒星' }
     ],
@@ -1931,7 +1931,7 @@ export const MARVEL_GUIDED_TOUR_STOPS = {
       objectId: 'nidavellir',
       title: '第 4 站：尼达维勒 — 中子星戴森环神兵熔炉',
       narration:
-        '下一站：尼达维勒！雷神索尔、火箭浣熊和少年格鲁特在这里重新拉动了环绕炽热蓝白中子星的三重戴森环，铸造出暴风战斧。在真实宇宙中，中子星上仅一茶匙物质就重达 10 亿吨！',
+        '下一站：尼达维勒！雷神索尔、火箭浣熊和少年格鲁特在这里重新拉动了环绕炽热蓝白中子星的三重戴森环，铸造出风暴战斧。在真实宇宙中，中子星上仅一茶匙物质就重达 10 亿吨！',
       zoomValue: 31,
       yaw: 0.55,
       pitch: 0.38
@@ -1939,9 +1939,9 @@ export const MARVEL_GUIDED_TOUR_STOPS = {
     {
       index: 4,
       objectId: 'knowhere',
-      title: '第 5 站：虚无知地 Knowhere — 护卫队天神头骨总部',
+      title: '第 5 站：虚无之地 Knowhere — 护卫队天神头骨总部',
       narration:
-        '穿过六边形宇宙空间跳跃门，我们抵达了漂浮在绚丽星云中的远古天神组巨大头骨——“虚无知地”，这里如今是银河护卫队与太空狗科斯莫的温馨大本营！',
+        '穿过六边形宇宙空间跳跃门，我们抵达了漂浮在绚丽星云中的远古天神族巨大头骨——“虚无之地”，这里如今是银河护卫队与太空狗科斯莫的温馨大本营！',
       zoomValue: 53,
       yaw: -0.35,
       pitch: 0.28
@@ -2127,7 +2127,7 @@ export const MARVEL_QUIZ_QUESTIONS = {
   zh: [
     {
       question:
-        '1. 在尼达维勒，雷神索尔、火箭浣熊与少年格鲁特利用哪种真实超致密天体的核心能量铸造了“暴风战斧”？',
+        '1. 在尼达维勒，雷神索尔、火箭浣熊与少年格鲁特利用哪种真实超致密天体的核心能量铸造了“风暴战斧”？',
       options: [
         '普通红矮星',
         '被“戴森环”巨型结构环绕的高速自转中子星',
@@ -2153,11 +2153,11 @@ export const MARVEL_QUIZ_QUESTIONS = {
     },
     {
       question:
-        '3. 银河护卫队（火箭浣熊、格鲁特、星爵与太空狗科斯莫）将他们的大本营总部设在了哪座由远古天神组巨大头骨改建的太空前哨站？',
-      options: ['莫拉格星 (Morag)', '虚无知地 (Knowhere)', '约顿海姆 (Jotunheim)', '穆斯贝尔海姆 (Muspelheim)'],
+        '3. 银河护卫队（火箭浣熊、格鲁特、星爵与太空狗科斯莫）将他们的大本营总部设在了哪座由远古天神族巨大头骨改建的太空前哨站？',
+      options: ['莫拉格星 (Morag)', '虚无之地 (Knowhere)', '约顿海姆 (Jotunheim)', '穆斯贝尔海姆 (Muspelheim)'],
       correctIndex: 1,
       explanation:
-        '完全正确！虚无知地（Knowhere）建造在漂浮于绚丽星云中的远古天神组头骨内部，如今是银河护卫队与太空狗科斯莫温暖的家园！'
+        '完全正确！虚无之地（Knowhere）建造在漂浮于绚丽星云中的远古天神族头骨内部，如今是银河护卫队与太空狗科斯莫温暖的家园！'
     },
     {
       question:
@@ -2236,7 +2236,7 @@ export const MARVEL_LABEL_NAMES = {
     nidavellir: '🔨 尼达维勒 (中子星戴森环熔炉)',
     jotunheim: '❄️ 约顿海姆 (冰霜巨人国度)',
     muspelheim: '🔥 穆斯贝尔海姆 (苏尔特尔火焰国度)',
-    knowhere: '💀 虚无知地 (天神组头骨与护卫队总部)',
+    knowhere: '💀 虚无之地 (天神族头骨与护卫队总部)',
     xandar: '🌟 山达尔星 (新星军团首都)',
     morag: '🟣 莫拉格星 (力量宝石神庙星球)',
     sovereign: '✨ 索维林星 (纯金电池星球群)',
@@ -2262,7 +2262,7 @@ export const MARVEL_LABEL_NAMES = {
     sovereign: '✨ ソヴリン (黄金の人工惑星群)',
     counterEarth: '🌍 カウンター・アース (反地球)',
     contraxia: '🌨️ コントラクシア (ラヴェジャーズ氷惑星)',
-    sakaar: '🌀 サカール & 悪魔のアナル・ワームホール',
+    sakaar: '🌀 サカール & 巨大マグネター・ワームホール',
     marvelTitan: '🪐 タイタン (サノスの故郷)',
     vormir: '🟠 ヴォーミア (ソウル・ストーンの日食惑星)',
     ego: '🧠 生ける惑星エゴ',
@@ -2282,7 +2282,7 @@ export const MARVEL_LABEL_NAMES = {
     sovereign: '✨ 소버린 (황금 인공 행성군)',
     counterEarth: '🌍 카운터 어스 (반지구)',
     contraxia: '🌨️ 콘트락시아 (라바저스 얼음 행성)',
-    sakaar: '🌀 사카르 & 악마의 항문 웜홀',
+    sakaar: '🌀 사카르 & 거대 마그네타 웜홀',
     marvelTitan: '🪐 타이탄 (타노스의 고향)',
     vormir: '🟠 보르미르 (소울 스톤의 일식 행성)',
     ego: '🧠 살아있는 행성 에고',

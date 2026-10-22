@@ -62,7 +62,7 @@ export const COSMIC_OBJECTS_ES = {
     category: 'Planeta hogar',
     badge: '🌍 ¡Donde vivimos!',
     quickStats: [
-      { label: 'Diámetro', value: '12,742 km (7,918 millas)' },
+      { label: 'Diámetro', value: '12,742 km' },
       { label: 'Distancia al Sol', value: '149.6 millones km (1 UA)' },
       { label: 'Duración del año', value: '365.25 días' },
       { label: 'Agua superficial', value: '71% océanos' }
@@ -71,7 +71,7 @@ export const COSMIC_OBJECTS_ES = {
       '¡La Tierra es el tercer planeta desde el Sol y el único lugar del universo donde sabemos que existe vida! Sus océanos líquidos, su escudo magnético protector y su atmósfera rica en oxígeno nos mantienen seguros.',
     funFacts: [
       '¡La Tierra no es una esfera perfecta: al girar se abulta un poquito en el ecuador como un balón ligeramente aplastado!',
-      '¡Ahora mismo viajas en la Nave Tierra alrededor del Sol a 107,000 km/h (67,000 mph)!',
+      '¡Ahora mismo viajas en la Nave Tierra alrededor del Sol a 107,000 km/h!',
       'Las auroras boreales y australes ocurren cuando nuestro escudo magnético desvía el viento solar.'
     ],
     travelTimes: {
@@ -86,7 +86,7 @@ export const COSMIC_OBJECTS_ES = {
     category: 'Satélite natural',
     badge: '🌕 12 humanos caminaron aquí',
     quickStats: [
-      { label: 'Distancia a la Tierra', value: '384,400 km (238,855 millas)' },
+      { label: 'Distancia a la Tierra', value: '384,400 km' },
       { label: 'Diámetro', value: '3,475 km (aprox. 1/4 de la Tierra)' },
       { label: 'Período orbital', value: '27.3 días' },
       { label: 'Gravedad superficial', value: '1/6 de la Tierra (¡Salta 6 veces más alto!)' }
@@ -111,7 +111,7 @@ export const COSMIC_OBJECTS_ES = {
     badge: '🛰️ 16 amaneceres cada día',
     quickStats: [
       { label: 'Altitud', value: '408 km sobre la Tierra' },
-      { label: 'Velocidad orbital', value: '27,600 km/h (17,150 mph)' },
+      { label: 'Velocidad orbital', value: '27,600 km/h' },
       { label: 'Tamaño', value: '109 metros (como un campo de fútbol)' },
       { label: 'Tiempo por órbita', value: '90 minutos por vuelta' }
     ],
@@ -625,7 +625,7 @@ export const COSMIC_OBJECTS_ES = {
     badge: '📍 ¡Estás aquí en la Vía Láctea!',
     quickStats: [
       { label: 'Distancia al centro galáctico', value: '26,670 años luz' },
-      { label: 'Velocidad galáctica', value: '828,000 km/h (514,000 mph)' },
+      { label: 'Velocidad galáctica', value: '828,000 km/h' },
       { label: 'Año galáctico', value: '¡230 millones de años por vuelta!' },
       { label: 'Estructura local', value: 'Burbuja Local (cavidad de 300 años luz)' }
     ],

@@ -30,7 +30,7 @@ export const MARVEL_SCALES_EXTRA = {
       name: 'サカール・タイタン・クリー辺境',
       subtitle: 'サカール大渦・サノスのタイタン・ヴォーミア・エゴ・ハラ',
       rangeLabel: '5,000光年 – 10万光年',
-      description: '銀河の辺境へ！「悪魔のアナル」ワームホールが渦巻くサカール、重力が傾いたサノスの故郷タイタン、永遠の皆既日食が輝くヴォーミア、生ける惑星エゴ、クリー帝国の首都ハラを探検！',
+      description: '銀河の辺境へ！「巨大マグネター」ワームホールが渦巻くサカール、重力が傾いたサノスの故郷タイタン、永遠の皆既日食が輝くヴォーミア、生ける惑星エゴ、クリー帝国の首都ハラを探検！',
       funPrompt: '「🌀 サカール」「🪐 タイタン」「🌑 ヴォーミア」をクリックして天体物理学と比較しよう！'
     },
     {
@@ -67,7 +67,7 @@ export const MARVEL_SCALES_EXTRA = {
       name: '사카르, 타이탄 & 크리 변경',
       subtitle: '사카르 웜홀, 타노스의 타이탄, 보르미르, 에고 & 할라',
       rangeLabel: '5,000광년 – 10만 광년',
-      description: '은하 변경으로 떠나세요! "악마의 항문" 웜홀이 소용돌이치는 사카르, 축이 기울어진 타노스의 고향 타이탄, 영원한 개기일식의 보르미르, 살아있는 행성 에고, 크리 제국 수도 할라를 탐험하세요!',
+      description: '은하 변경으로 떠나세요! "거대 마그네타" 웜홀이 소용돌이치는 사카르, 축이 기울어진 타노스의 고향 타이탄, 영원한 개기일식의 보르미르, 살아있는 행성 에고, 크리 제국 수도 할라를 탐험하세요!',
       funPrompt: '"🌀 사카르", "🪐 타이탄", "🌑 보르미르"를 클릭해 마블 설정과 실제 우주과학을 비교해 보세요!'
     },
     {
@@ -104,7 +104,7 @@ export const MARVEL_SCALES_EXTRA = {
       name: 'Sakaar, Titã e Borda Kree',
       subtitle: 'Vórtice de Sakaar, Titã de Thanos, Vormir, Ego e Hala',
       rangeLabel: '5.000 – 100.000 anos-luz',
-      description: 'Aventure-se na borda galáctica! Visite Sakaar e o buraco de minhoca "Ânus do Diabo", o mundo inclinado de Thanos (Titã), o eclipse eterno de Vormir, Ego o Planeta Vivo e Hala!',
+      description: 'Aventure-se na borda galáctica! Visite Sakaar e o buraco de minhoca "Grande Magnetar", o mundo inclinado de Thanos (Titã), o eclipse eterno de Vormir, Ego o Planeta Vivo e Hala!',
       funPrompt: 'Clique em "🌀 Sakaar", "🪐 Titã" ou "🌑 Vormir" para descobrir a ciência real por trás deles!'
     },
     {
@@ -341,7 +341,7 @@ export const MARVEL_LABEL_NAMES_EXTRA = {
     sovereign: 'ソヴリン (黄金の人工惑星群)',
     counterEarth: 'カウンター・アース (反地球)',
     contraxia: 'コントラクシア (ラヴェジャーズ氷惑星)',
-    sakaar: 'サカール & 悪魔のアナル・ワームホール',
+    sakaar: 'サカール & 巨大マグネター・ワームホール',
     marvelTitan: 'タイタン (サノスの故郷)',
     vormir: 'ヴォーミア (ソウル・ストーンの日食惑星)',
     ego: '生ける惑星エゴ',
@@ -361,7 +361,7 @@ export const MARVEL_LABEL_NAMES_EXTRA = {
     sovereign: '소버린 (황금 인공 행성군)',
     counterEarth: '카운터 어스 (반지구)',
     contraxia: '콘트락시아 (라바저스 얼음 행성)',
-    sakaar: '사카르 & 악마의 항문 웜홀',
+    sakaar: '사카르 & 거대 마그네타 웜홀',
     marvelTitan: '타이탄 (타노스의 고향)',
     vormir: '보르미르 (소울 스톤의 일식 행성)',
     ego: '살아있는 행성 에고',
@@ -584,12 +584,12 @@ export const MARVEL_OBJECTS_EXTRA = {
       ]
     },
     sakaar: {
-      name: 'サカールと「悪魔のアナル」ワームホール',
+      name: 'サカールと「巨大マグネター」ワームホール',
       pronunciation: 'サカール',
       category: '無数のワームホールが集まる辺境惑星',
       badge: '🌀 ソーとハルクが闘技場で再会した星！',
-      kidSummary: '宇宙中のワームホールから漂流物が落ちてくるカラフルな惑星で、グランドマスターが支配しています！ソー、ロキ、ヴァルキリー、ハルクは最大の重力特異点「悪魔のアナル」を突破してアスガルドへ脱出しました。',
-      quickStats: [{ label: '最大の特異点', value: '悪魔のアナル（アインシュタイン＝ローゼン橋）' }],
+      kidSummary: '宇宙中のワームホールから漂流物が落ちてくるカラフルな惑星で、グランドマスターが支配しています！ソー、ロキ、ヴァルキリー、ハルクは最大の重力特異点「巨大マグネター」を突破してアスガルドへ脱出しました。',
+      quickStats: [{ label: '最大の特異点', value: '巨大マグネター（アインシュタイン＝ローゼン橋）' }],
       funFacts: [
         '【実際の天体物理学】サカールで時間の進み方がおかしくなる描写は、強い重力場の近くで時間が遅れるアインシュタインの「重力による時間の遅れ（一般相対性理論）」に基づいています！'
       ]
@@ -795,12 +795,12 @@ export const MARVEL_OBJECTS_EXTRA = {
       ]
     },
     sakaar: {
-      name: '사카르 & "악마의 항문" 웜홀',
+      name: '사카르 & "거대 마그네타" 웜홀',
       pronunciation: '사카르',
       category: '웜홀 특이점 교차로 행성',
       badge: '🌀 토르와 헐크가 검투장에서 재회한 행성!',
-      kidSummary: '우주 곳곳의 웜홀들로 둘러싸여 온갖 우주선과 표류물이 떨어지는 행성입니다! 토르, 로키, 발키리, 헐크는 가장 거대한 아인슈타인-로젠 브리지인 "악마의 항문"을 돌파해 아스가르드로 탈출했습니다.',
-      quickStats: [{ label: '최대 특이점', value: '악마의 항문 (아인슈타인-로젠 웜홀)' }],
+      kidSummary: '우주 곳곳의 웜홀들로 둘러싸여 온갖 우주선과 표류물이 떨어지는 행성입니다! 토르, 로키, 발키리, 헐크는 가장 거대한 아인슈타인-로젠 브리지인 "거대 마그네타"을 돌파해 아스가르드로 탈출했습니다.',
+      quickStats: [{ label: '최대 특이점', value: '거대 마그네타 (아인슈타인-로젠 웜홀)' }],
       funFacts: [
         '【실제 천체물리학】사카르에서 시간이 다르게 흐르는 현상은 강력한 중력장 근처에서 시간이 느리게 흐르는 아인슈타인의 "중력 시간 지연" 효과와 일치합니다!'
       ]
@@ -981,11 +981,11 @@ export const MARVEL_OBJECTS_EXTRA = {
       funFacts: ['【Astrofísica Real】Mundos orbitando estrelas anãs frias recebem pouca radiação térmica, mantendo superfícies congeladas.']
     },
     sakaar: {
-      name: 'Sakaar e o Buraco de Minhoca "Ânus do Diabo"',
+      name: 'Sakaar e o Buraco de Minhoca "Grande Magnetar"',
       pronunciation: 'sa-KA-ar',
       category: 'Nexo de Singularidades e Buracos de Minhoca',
       badge: '🌀 Onde Thor e Hulk lutaram na arena!',
-      kidSummary: 'Um planeta colorido cercado por buracos de minhoca de onde Thor, Loki, Valquíria e Hulk escaparam atravessando o gigantesco vórtice "Ânus do Diabo"!',
+      kidSummary: 'Um planeta colorido cercado por buracos de minhoca de onde Thor, Loki, Valquíria e Hulk escaparam atravessando o gigantesco vórtice "Grande Magnetar"!',
       quickStats: [{ label: 'Singularidade', value: 'Ponte de Einstein-Rosen gigante' }],
       funFacts: ['【Astrofísica Real】A passagem estranha do tempo em Sakaar reflete a Dilatação Temporal Gravitacional prevista pela Relatividade Geral de Einstein!']
     },
@@ -1149,11 +1149,11 @@ export const MARVEL_OBJECTS_EXTRA = {
       funFacts: ['【Astrophysique Réelle】Les planètes en orbite autour de naines rouges froides reçoivent peu de chaleur et restent glacées.']
     },
     sakaar: {
-      name: 'Sakaar et le Trou de Ver « l’Anus du Diable »',
+      name: 'Sakaar et le Trou de Ver « le Grand Magnétar »',
       pronunciation: 'sa-KAR',
       category: 'Carrefour de Singularités et de Trous de Ver',
       badge: '🌀 Là où Thor et Hulk se sont affrontés dans l’arène !',
-      kidSummary: 'Une planète colorée entourée de trous de ver d’où Thor, Loki, Valkyrie et Hulk se sont échappés en franchissant le vortex géant « l’Anus du Diable » !',
+      kidSummary: 'Une planète colorée entourée de trous de ver d’où Thor, Loki, Valkyrie et Hulk se sont échappés en franchissant le vortex géant « le Grand Magnétar » !',
       quickStats: [{ label: 'Singularité', value: 'Pont d’Einstein-Rosen géant' }],
       funFacts: ['【Astrophysique Réelle】La distorsion du temps sur Sakaar illustre la Dilatation Temporelle Gravitationnelle prédite par la Relativité Générale d’Einstein !']
     },
@@ -1317,11 +1317,11 @@ export const MARVEL_OBJECTS_EXTRA = {
       funFacts: ['【Astrofisica Reale】I mondi in orbita attorno a nane rosse fredde ricevono poca energia termica, rimanendo congelati.']
     },
     sakaar: {
-      name: 'Sakaar e il Wormhole "L’Ano del Diavolo"',
+      name: 'Sakaar e il Wormhole "il Grande Magnetar"',
       pronunciation: 'sa-KA-ar',
       category: 'Crocevia di Singolarità e Wormhole',
       badge: '🌀 Dove Thor e Hulk hanno combattuto nell’arena!',
-      kidSummary: 'Un pianeta colorato circondato da wormhole da cui Thor, Loki, Valchiria e Hulk sono fuggiti attraversando il gigantesco vortice "L’Ano del Diavolo"!',
+      kidSummary: 'Un pianeta colorato circondato da wormhole da cui Thor, Loki, Valchiria e Hulk sono fuggiti attraversando il gigantesco vortice "il Grande Magnetar"!',
       quickStats: [{ label: 'Singolarità', value: 'Ponte di Einstein-Rosen gigante' }],
       funFacts: ['【Astrofisica Reale】Lo scorrere anomalo del tempo su Sakaar riflette la Dilatazione Temporale Gravitazionale prevista dalla Relatività Generale di Einstein!']
     },
@@ -1382,7 +1382,7 @@ export const MARVEL_GUIDED_TOUR_STOPS_EXTRA = {
     { objectId: 'knowhere', scaleIndex: 2, zoomValue: 55, yaw: -0.4, pitch: 0.3, title: '第5停留所：ノーウェア（セレスティアル頭部・ガーディアンズ本部）', narration: 'ガーディアンズ・オブ・ギャラクシーの本部「ノーウェア」へジャンプ！太古のセレスティアルの巨大な頭蓋骨の中に作られた宇宙基地です。' },
     { objectId: 'xandar', scaleIndex: 2, zoomValue: 56, yaw: 0.5, pitch: 0.28, title: '第6停留所：ザンダーと六角ジャンプポイント', narration: 'ノヴァ帝国の首都ザンダーです！すぐ隣に浮かぶ六角形のポータルは、宇宙を一瞬で移動するジャンプポイントです。' },
     { objectId: 'morag', scaleIndex: 2, zoomValue: 58, yaw: -0.3, pitch: 0.35, title: '第7停留所：モラグ（パワー・ストーンの海洋神殿）', narration: '300年に一度だけ海が引く惑星モラグです。スター・ロードがここで紫色に輝くパワー・ストーン（オーブ）を発見しました。' },
-    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: '第8停留所：サカールと「悪魔のアナル」ワームホール', narration: 'ソーとハルクが闘技場で戦った惑星サカールです！上空で渦巻く赤と青の巨大な渦は、最大のワームホール「悪魔のアナル」です。' },
+    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: '第8停留所：サカールと「巨大マグネター」ワームホール', narration: 'ソーとハルクが闘技場で戦った惑星サカールです！上空で渦巻く赤と青の巨大な渦は、最大のワームホール「巨大マグネター」です。' },
     { objectId: 'marvelTitan', scaleIndex: 3, zoomValue: 76, yaw: -0.5, pitch: 0.32, title: '第9停留所：タイタンとヴォーミア', narration: '地軸が傾き、砕けた月のリングが取り巻くサノスの故郷タイタンです！アベンジャーズとガーディアンズがここでサノスと激突しました。' },
     { objectId: 'arishem', scaleIndex: 4, zoomValue: 93, yaw: 0.2, pitch: 0.28, title: '第10停留所：審判者アリシェムと6つのインフィニティ・ストーン', narration: 'ついに宇宙最大のスケールへ！最初の太陽を灯したプライム・セレスティアル「アリシェム」の周りを、ビッグバンから生まれた6つのインフィニティ・ストーンが輝いています！' }
   ],
@@ -1394,7 +1394,7 @@ export const MARVEL_GUIDED_TOUR_STOPS_EXTRA = {
     { objectId: 'knowhere', scaleIndex: 2, zoomValue: 55, yaw: -0.4, pitch: 0.3, title: '정거장 5: 노웨어 (셀레스티얼 두개골 & 가디언즈 본부)', narration: '가디언즈 오브 갤럭시의 본부 노웨어입니다! 고대 셀레스티얼의 거대한 머리뼈 안에 세워진 우주 기지입니다.' },
     { objectId: 'xandar', scaleIndex: 2, zoomValue: 56, yaw: 0.5, pitch: 0.28, title: '정거장 6: 잔다르 & 육각형 점프 포인트', narration: '노바 제국의 수도 잔다르입니다! 옆에 떠 있는 육각형 포털은 은하계를 순식간에 이동하는 점프 포인트입니다.' },
     { objectId: 'morag', scaleIndex: 2, zoomValue: 58, yaw: -0.3, pitch: 0.35, title: '정거장 7: 모라그 (파워 스톤의 바다 사원)', narration: '300년에 한 번 바다가 열리는 행성 모라그입니다. 스타로드가 이곳에서 보라색 파워 스톤을 찾아냈습니다.' },
-    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: '정거장 8: 사카르 & "악마의 항문" 웜홀', narration: '토르와 헐크가 검투장에서 맞붙었던 사카르 행성입니다! 상공에 소용돌이치는 붉고 푸른 고리는 거대 웜홀 "악마의 항문"입니다.' },
+    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: '정거장 8: 사카르 & "거대 마그네타" 웜홀', narration: '토르와 헐크가 검투장에서 맞붙었던 사카르 행성입니다! 상공에 소용돌이치는 붉고 푸른 고리는 거대 웜홀 "거대 마그네타"입니다.' },
     { objectId: 'marvelTitan', scaleIndex: 3, zoomValue: 76, yaw: -0.5, pitch: 0.32, title: '정거장 9: 타이탄 & 보르미르', narration: '자전축이 기울어지고 부서진 달의 파편 고리가 둘러싼 타노스의 고향 타이탄입니다!' },
     { objectId: 'arishem', scaleIndex: 4, zoomValue: 93, yaw: 0.2, pitch: 0.28, title: '정거장 10: 심판자 아리솀 & 6대 인피니티 스톤', narration: '가장 거대한 우주 스케일! 최초의 별을 피워낸 프라임 셀레스티얼 아리솀 주위로 빅뱅에서 탄생한 6개의 인피니티 스톤이 빛나고 있습니다!' }
   ],
@@ -1406,7 +1406,7 @@ export const MARVEL_GUIDED_TOUR_STOPS_EXTRA = {
     { objectId: 'knowhere', scaleIndex: 2, zoomValue: 55, yaw: -0.4, pitch: 0.3, title: 'Parada 5: Luganenhum (QG dos Guardiões)', narration: 'Saltamos para Luganenhum (Knowhere), o crânio gigante de um Celestial antigo que serve de base para os Guardiões da Galáxia!' },
     { objectId: 'xandar', scaleIndex: 2, zoomValue: 56, yaw: 0.5, pitch: 0.28, title: 'Parada 6: Xandar e Portal de Salto Hexagonal', narration: 'A capital do Império Nova, Xandar, ao lado de um Ponto de Salto hexagonal da rede de teletransporte espacial!' },
     { objectId: 'morag', scaleIndex: 2, zoomValue: 58, yaw: -0.3, pitch: 0.35, title: 'Parada 7: Morag (Templo da Joia do Poder)', narration: 'O mundo oceânico de Morag, onde os mares recuam a cada 300 anos e o Senhor das Estrelas encontrou a Joia do Poder!' },
-    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: 'Parada 8: Sakaar e o Buraco de Minhoca', narration: 'Sakaar, o planeta de gladiadores onde Thor e Hulk se reencontraram, orbitado pelo gigantesco vórtice "Ânus do Diabo"!' },
+    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: 'Parada 8: Sakaar e o Buraco de Minhoca', narration: 'Sakaar, o planeta de gladiadores onde Thor e Hulk se reencontraram, orbitado pelo gigantesco vórtice "Grande Magnetar"!' },
     { objectId: 'marvelTitan', scaleIndex: 3, zoomValue: 76, yaw: -0.5, pitch: 0.32, title: 'Parada 9: Titã (Mundo Natal de Thanos)', narration: 'O mundo inclinado de Thanos, cercado pelo anel de detritos da lua que ele despedaçou durante a batalha contra os Vingadores e Guardiões!' },
     { objectId: 'arishem', scaleIndex: 4, zoomValue: 93, yaw: 0.2, pitch: 0.28, title: 'Parada 10: Arishem e as Seis Joias do Infinito', narration: 'Na escala do Universo Observável, contemplamos Arishem, o Celestial Primordial que acendeu as primeiras estrelas, cercado pelas 6 Joias do Infinito!' }
   ],
@@ -1418,7 +1418,7 @@ export const MARVEL_GUIDED_TOUR_STOPS_EXTRA = {
     { objectId: 'knowhere', scaleIndex: 2, zoomValue: 55, yaw: -0.4, pitch: 0.3, title: 'Étape 5 : Knowhere (QG des Gardiens)', narration: 'Sautons vers Knowhere, le crâne géant d’un ancien Céleste devenu le quartier général des Gardiens de la Galaxie !' },
     { objectId: 'xandar', scaleIndex: 2, zoomValue: 56, yaw: 0.5, pitch: 0.28, title: 'Étape 6 : Xandar et Portail de Saut Hexagonal', narration: 'Voici Xandar, capitale de l’Empire Nova, accompagnée d’un Point de Saut hexagonal !' },
     { objectId: 'morag', scaleIndex: 2, zoomValue: 58, yaw: -0.3, pitch: 0.35, title: 'Étape 7 : Morag (Sanctuaire de la Pierre du Pouvoir)', narration: 'La planète océanique Morag, où les mers se retirent tous les 300 ans et où Star-Lord a découvert la Pierre du Pouvoir !' },
-    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: 'Étape 8 : Sakaar et son Trou de Ver Géant', narration: 'Sakaar, la planète d’arène où Thor et Hulk se sont retrouvés, dominée par le tourbillon du trou de ver « l’Anus du Diable » !' },
+    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: 'Étape 8 : Sakaar et son Trou de Ver Géant', narration: 'Sakaar, la planète d’arène où Thor et Hulk se sont retrouvés, dominée par le tourbillon du trou de ver « le Grand Magnétar » !' },
     { objectId: 'marvelTitan', scaleIndex: 3, zoomValue: 76, yaw: -0.5, pitch: 0.32, title: 'Étape 9 : Titan (Monde de Thanos)', narration: 'Le monde incliné de Thanos, entouré par l’anneau de débris de la lune brisée lors du combat contre les Avengers et les Gardiens !' },
     { objectId: 'arishem', scaleIndex: 4, zoomValue: 93, yaw: 0.2, pitch: 0.28, title: 'Étape 10 : Arishem et les Six Pierres d’Infinité', narration: 'À l’échelle de l’Univers observable, voici Arishem le Premier Céleste entouré des six Pierres d’Infinité issues du Big Bang !' }
   ],
@@ -1430,7 +1430,7 @@ export const MARVEL_GUIDED_TOUR_STOPS_EXTRA = {
     { objectId: 'knowhere', scaleIndex: 2, zoomValue: 55, yaw: -0.4, pitch: 0.3, title: 'Tappa 5: Knowhere / Ovunque (QG dei Guardiani)', narration: 'Saltiamo verso Knowhere, il cranio gigante di un antico Celestiale diventato il quartier generale dei Guardiani della Galassia!' },
     { objectId: 'xandar', scaleIndex: 2, zoomValue: 56, yaw: 0.5, pitch: 0.28, title: 'Tappa 6: Xandar e Portale di Salto Esagonale', narration: 'Ecco Xandar, capitale dell’Impero Nova, affiancata da un Punto di Salto esagonale!' },
     { objectId: 'morag', scaleIndex: 2, zoomValue: 58, yaw: -0.3, pitch: 0.35, title: 'Tappa 7: Morag (Tempio della Gemma del Potere)', narration: 'Il pianeta oceanico Morag, dove i mari si ritirano ogni 300 anni e Star-Lord ha trovato la Gemma del Potere!' },
-    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: 'Tappa 8: Sakaar e il Wormhole Gigante', narration: 'Sakaar, il pianeta arena dove Thor e Hulk si sono ritrovati, sovrastato dal vortice del wormhole "L’Ano del Diavolo"!' },
+    { objectId: 'sakaar', scaleIndex: 3, zoomValue: 74, yaw: 0.4, pitch: 0.35, title: 'Tappa 8: Sakaar e il Wormhole Gigante', narration: 'Sakaar, il pianeta arena dove Thor e Hulk si sono ritrovati, sovrastato dal vortice del wormhole "il Grande Magnetar"!' },
     { objectId: 'marvelTitan', scaleIndex: 3, zoomValue: 76, yaw: -0.5, pitch: 0.32, title: 'Tappa 9: Titano (Mondo Natale di Thanos)', narration: 'Il mondo inclinato di Thanos, circondato dall’anello di detriti della luna frantumata durante la battaglia contro Avengers e Guardiani!' },
     { objectId: 'arishem', scaleIndex: 4, zoomValue: 93, yaw: 0.2, pitch: 0.28, title: 'Tappa 10: Arishem e le Sei Gemme dell’Infinito', narration: 'Alla scala dell’Universo osservabile, ammiriamo Arishem il Primo Celestiale circondato dalle sei Gemme dell’Infinito nate nel Big Bang!' }
   ]
@@ -1445,7 +1445,7 @@ export const MARVEL_QUIZ_QUESTIONS_EXTRA = {
       explanation: '大正解！ニダヴェリアは超新星爆発の後に残る超高密度の「中性子星」をダイソン・リングで囲んだ巨大鍛冶場です。'
     },
     {
-      question: 'アスガルドの虹の橋「ビフレスト」やサカールの「悪魔のアナル」の正体として、ジェーン・フォスター博士が説明した物理学の現象は？',
+      question: 'アスガルドの虹の橋「ビフレスト」やサカールの「巨大マグネター」の正体として、ジェーン・フォスター博士が説明した物理学の現象は？',
       options: ['アインシュタイン＝ローゼン橋（ワームホール）', '日食', 'オーロラ', '小惑星の衝突'],
       correctIndex: 0,
       explanation: 'その通り！アインシュタインとローゼンが1935年に一般相対性理論から導いた「アインシュタイン＝ローゼン橋（ワームホール）」です。'

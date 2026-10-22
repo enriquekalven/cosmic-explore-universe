@@ -413,10 +413,10 @@ export function worldFromGalactic(lDeg, bDeg) {
   ];
 }
 
-export function formatDateUTC(dateMs) {
+export function formatDateUTC(dateMs, locale = undefined) {
   const d = new Date(dateMs);
   if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleString(undefined, {
+  return d.toLocaleString(locale, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -425,8 +425,8 @@ export function formatDateUTC(dateMs) {
   });
 }
 
-export function formatNumber(n, digits = 0) {
-  return Number(n).toLocaleString(undefined, { maximumFractionDigits: digits });
+export function formatNumber(n, digits = 0, locale = undefined) {
+  return Number(n).toLocaleString(locale, { maximumFractionDigits: digits });
 }
 
 export function formatDistanceKm(km) {

@@ -36,39 +36,68 @@ import {
 
 export const SUPPORTED_LANGUAGES = ['en', 'es', 'zh', 'ja', 'ko', 'pt', 'fr', 'it'];
 
+/**
+ * Languages shown to the public. ja/ko/pt/fr/it stay in the codebase but are only
+ * reachable with `?preview=i18n` (query) or `#…&preview=i18n` (hash) for QA.
+ */
+export const PUBLIC_LANGS = ['en', 'es', 'zh'];
+
+/** Switcher labels (button text + tooltip) for every supported language. */
+export const LANG_META = {
+  en: { label: 'EN', title: 'English' },
+  es: { label: 'ES', title: 'Español' },
+  zh: { label: '中文', title: '中文（简体）' },
+  ja: { label: '日本語', title: '日本語' },
+  ko: { label: '한국어', title: '한국어' },
+  pt: { label: 'PT', title: 'Português (Brasil)' },
+  fr: { label: 'FR', title: 'Français' },
+  it: { label: 'IT', title: 'Italiano' }
+};
+
+/**
+ * Maps any BCP-47-ish tag to one of SUPPORTED_LANGUAGES ('en' if unknown).
+ * Accepts underscores and script/region subtags: ja_JP, pt_BR, cmn-Hans-CN, zh-Hant-TW.
+ */
 export function normalizeLang(raw) {
   if (!raw) return 'en';
-  const s = String(raw).toLowerCase().trim();
-  if (s === 'es' || s.startsWith('es-')) return 'es';
-  if (s === 'zh' || s.startsWith('zh-') || s === 'cmn') return 'zh';
-  if (s === 'ja' || s.startsWith('ja-')) return 'ja';
-  if (s === 'ko' || s.startsWith('ko-')) return 'ko';
-  if (s === 'pt' || s.startsWith('pt-')) return 'pt';
-  if (s === 'fr' || s.startsWith('fr-')) return 'fr';
-  if (s === 'it' || s.startsWith('it-')) return 'it';
-  return 'en';
+  const primary = String(raw).trim().toLowerCase().replace(/_/g, '-').split('-')[0];
+  if (primary === 'cmn' || primary === 'zh') return 'zh';
+  return SUPPORTED_LANGUAGES.includes(primary) ? primary : 'en';
+}
+
+/** True when the URL query or hash carries preview=i18n (all 8 languages unlocked for QA). */
+export function isPreviewI18n(loc = typeof window !== 'undefined' ? window.location : null) {
+  if (!loc) return false;
+  try {
+    if (new URLSearchParams(loc.search || '').get('preview') === 'i18n') return true;
+    if (new URLSearchParams(String(loc.hash || '').replace(/^#/, '')).get('preview') === 'i18n') return true;
+  } catch (_) {}
+  return false;
+}
+
+/** Languages selectable right now (public set, or all 8 in preview). */
+export function getAvailableLanguages(preview = isPreviewI18n()) {
+  return preview ? SUPPORTED_LANGUAGES.slice() : PUBLIC_LANGS.slice();
+}
+
+/** Normalizes and gates a requested language: non-available languages fall back to 'en'. */
+export function gateLang(raw, preview = isPreviewI18n()) {
+  const l = normalizeLang(raw);
+  return getAvailableLanguages(preview).includes(l) ? l : 'en';
 }
 
 export function detectInitialLanguage() {
   if (typeof window === 'undefined') return 'en';
+  const preview = isPreviewI18n();
   try {
-    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    const hashLang = hashParams.get('lang');
-    if (hashLang && SUPPORTED_LANGUAGES.includes(normalizeLang(hashLang))) {
-      return normalizeLang(hashLang);
-    }
-    const searchParams = new URLSearchParams(window.location.search);
-    const queryLang = searchParams.get('lang');
-    if (queryLang && SUPPORTED_LANGUAGES.includes(normalizeLang(queryLang))) {
-      return normalizeLang(queryLang);
-    }
+    const hashLang = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('lang');
+    if (hashLang) return gateLang(hashLang, preview);
+    const queryLang = new URLSearchParams(window.location.search).get('lang');
+    if (queryLang) return gateLang(queryLang, preview);
     const stored = window.localStorage.getItem('cosmic_lang');
-    if (stored && SUPPORTED_LANGUAGES.includes(normalizeLang(stored))) {
-      return normalizeLang(stored);
-    }
-    if (navigator.language) {
-      return normalizeLang(navigator.language);
-    }
+    if (stored) return gateLang(stored, preview);
+    const nav = (navigator.languages && navigator.languages[0]) || navigator.language;
+    if (nav) return gateLang(nav, preview);
   } catch (_) {}
   return 'en';
 }
@@ -939,45 +968,83 @@ export const LABEL_NAMES_I18N = {
   it: { ...(LABEL_NAMES_EXTRA.it || {}), ...(MARVEL_LABEL_NAMES_EXTRA.it || {}) }
 };
 
-export function getUI(lang = 'en') {
-  return UI_STRINGS[normalizeLang(lang)] || UI_STRINGS.en;
+// ---------------------------------------------------------------------------
+// Merging helpers: per-language data is deep-merged over the English base so a
+// missing field falls back to en instead of disappearing. Arrays take the
+// localized items (no English item is appended to a localized list); array items
+// that are objects are merged index-wise so structural fields (ids, cameras) survive.
+// ---------------------------------------------------------------------------
+function isPlainObject(v) {
+  return v !== null && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
 }
 
-export function getQuickTargets(lang = 'en') {
+export function deepMergeLocalized(base, over) {
+  if (over === undefined || over === null) return base;
+  if (Array.isArray(over)) {
+    if (!over.length) return Array.isArray(base) ? base : over;
+    const b = Array.isArray(base) ? base : [];
+    return over.map((item, i) => deepMergeLocalized(b[i], item));
+  }
+  if (isPlainObject(over) && isPlainObject(base)) {
+    const out = { ...base };
+    for (const k of Object.keys(over)) out[k] = deepMergeLocalized(base[k], over[k]);
+    return out;
+  }
+  return over;
+}
+
+/** Merge chain en → existing → fill (later layers win). */
+function mergeLayers(...layers) {
+  return layers.reduce((acc, layer) => deepMergeLocalized(acc, layer));
+}
+
+const UI_CACHE = new Map();
+export function getUI(lang = 'en') {
+  const l = normalizeLang(lang);
+  if (!UI_CACHE.has(l)) {
+    UI_CACHE.set(l, l === 'en' ? UI_STRINGS.en : { ...UI_STRINGS.en, ...(UI_STRINGS[l] || {}) });
+  }
+  return UI_CACHE.get(l);
+}
+
+const isMarvelMode = (mode) => mode === 'marvel';
+
+export function getQuickTargets(lang = 'en', universeMode = 'nasa') {
+  if (isMarvelMode(universeMode)) return getMarvelQuickTargets(lang);
   return QUICK_TARGETS_I18N[normalizeLang(lang)] || QUICK_TARGETS_I18N.en;
 }
 
-export function getCosmicScales(lang = 'en') {
+export function getCosmicScales(lang = 'en', universeMode = 'nasa') {
+  if (isMarvelMode(universeMode)) return getMarvelScales(lang);
   const l = normalizeLang(lang);
-  if (l === 'es') {
-    return COSMIC_SCALES.map((s, i) => ({ ...s, ...(COSMIC_SCALES_ES[i] || {}) }));
-  }
-  if (l === 'zh') {
-    return COSMIC_SCALES.map((s, i) => ({ ...s, ...(COSMIC_SCALES_ZH[i] || {}) }));
-  }
-  if (COSMIC_SCALES_EXTRA[l]) {
-    return COSMIC_SCALES.map((s, i) => ({ ...s, ...(COSMIC_SCALES_EXTRA[l][i] || {}) }));
-  }
-  return COSMIC_SCALES;
+  const over = l === 'es' ? COSMIC_SCALES_ES : l === 'zh' ? COSMIC_SCALES_ZH : COSMIC_SCALES_EXTRA[l];
+  if (!over) return COSMIC_SCALES;
+  return COSMIC_SCALES.map((s, i) => deepMergeLocalized(s, over[i]));
 }
 
-export function getCosmicObject(id, lang = 'en') {
+function getNasaObject(id, lang) {
   const base = COSMIC_OBJECTS[id];
   if (!base) return null;
   const l = normalizeLang(lang);
-  if (l === 'es' && COSMIC_OBJECTS_ES[id]) {
-    return { ...base, ...COSMIC_OBJECTS_ES[id] };
-  }
-  if (l === 'zh' && COSMIC_OBJECTS_ZH[id]) {
-    return { ...base, ...COSMIC_OBJECTS_ZH[id] };
-  }
-  if (COSMIC_OBJECTS_EXTRA[l] && COSMIC_OBJECTS_EXTRA[l][id]) {
-    return { ...base, ...COSMIC_OBJECTS_EXTRA[l][id] };
-  }
-  return base;
+  if (l === 'en') return base;
+  const over = l === 'es' ? COSMIC_OBJECTS_ES[id] : l === 'zh' ? COSMIC_OBJECTS_ZH[id] : COSMIC_OBJECTS_EXTRA[l] && COSMIC_OBJECTS_EXTRA[l][id];
+  return over ? deepMergeLocalized(base, over) : base;
 }
 
-export function getGuidedTourStops(lang = 'en') {
+/**
+ * Inspector data for an object. In Guardians mode, Guardians worlds resolve through
+ * getMarvelObject; anything else (e.g. Midgard/Earth) falls back to the NASA catalog.
+ */
+export function getCosmicObject(id, lang = 'en', universeMode = 'nasa') {
+  if (isMarvelMode(universeMode)) {
+    const m = getMarvelObject(id, lang);
+    if (m) return m;
+  }
+  return getNasaObject(id, lang);
+}
+
+export function getGuidedTourStops(lang = 'en', universeMode = 'nasa') {
+  if (isMarvelMode(universeMode)) return getMarvelTourStops(lang);
   const l = normalizeLang(lang);
   if (l === 'es') return GUIDED_TOUR_STOPS_ES;
   if (l === 'zh') return GUIDED_TOUR_STOPS_ZH;
@@ -985,7 +1052,8 @@ export function getGuidedTourStops(lang = 'en') {
   return GUIDED_TOUR_STOPS;
 }
 
-export function getSpaceQuizQuestions(lang = 'en') {
+export function getSpaceQuizQuestions(lang = 'en', universeMode = 'nasa') {
+  if (isMarvelMode(universeMode)) return getMarvelQuizQuestions(lang);
   const l = normalizeLang(lang);
   if (l === 'es') return SPACE_QUIZ_QUESTIONS_ES;
   if (l === 'zh') return SPACE_QUIZ_QUESTIONS_ZH;
@@ -995,45 +1063,60 @@ export function getSpaceQuizQuestions(lang = 'en') {
 
 export function getMarvelScales(lang = 'en') {
   const l = normalizeLang(lang);
-  if (MARVEL_SCALES_EXTRA[l]) {
-    return MARVEL_SCALES.en.map((s, i) => ({ ...s, ...(MARVEL_SCALES_EXTRA[l][i] || {}) }));
-  }
-  return MARVEL_SCALES[l] || MARVEL_SCALES.en;
+  const over = MARVEL_SCALES_EXTRA[l] || (l !== 'en' && MARVEL_SCALES[l]);
+  if (!over) return MARVEL_SCALES.en;
+  return MARVEL_SCALES.en.map((s, i) => deepMergeLocalized(s, over[i]));
 }
 
 export function getMarvelQuickTargets(lang = 'en') {
   const l = normalizeLang(lang);
-  if (MARVEL_QUICK_TARGETS_EXTRA[l]) return MARVEL_QUICK_TARGETS_EXTRA[l];
-  return MARVEL_QUICK_TARGETS[l] || MARVEL_QUICK_TARGETS.en;
+  const over = MARVEL_QUICK_TARGETS_EXTRA[l] || (l !== 'en' && MARVEL_QUICK_TARGETS[l]);
+  if (!over) return MARVEL_QUICK_TARGETS.en;
+  // Ids/categories come from en; only labels are localized (matched by id).
+  const byId = new Map(over.map((t) => [t.id, t]));
+  return MARVEL_QUICK_TARGETS.en.map((t) => ({ ...t, label: (byId.get(t.id) || t).label }));
 }
 
 export function getMarvelCategories(lang = 'en') {
   const l = normalizeLang(lang);
-  if (MARVEL_CATEGORIES_EXTRA[l]) return MARVEL_CATEGORIES_EXTRA[l];
-  return MARVEL_CATEGORIES[l] || MARVEL_CATEGORIES.en;
+  const over = MARVEL_CATEGORIES_EXTRA[l] || (l !== 'en' && MARVEL_CATEGORIES[l]);
+  if (!over) return MARVEL_CATEGORIES.en;
+  const byId = new Map(over.map((c) => [c.id, c]));
+  return MARVEL_CATEGORIES.en.map((c) => ({ ...c, label: (byId.get(c.id) || c).label }));
+}
+
+/** Internal id for Thanos's Titan (kept apart from Saturn's moon `titan`). */
+function marvelKey(id) {
+  return id === 'titan' && !MARVEL_OBJECTS.titan ? 'marvelTitan' : id;
+}
+
+export function isMarvelObjectId(id) {
+  return !!MARVEL_OBJECTS[marvelKey(id)];
 }
 
 export function getMarvelObject(id, lang = 'en') {
-  const key = id === 'titan' && !MARVEL_OBJECTS.titan ? 'marvelTitan' : id;
+  const key = marvelKey(id);
   const base = MARVEL_OBJECTS[key];
   if (!base) return null;
   const l = normalizeLang(lang);
-  if (l === 'es' && MARVEL_OBJECTS_ES[key]) {
-    return { ...base, ...MARVEL_OBJECTS_ES[key] };
-  }
-  if (l === 'zh' && MARVEL_OBJECTS_ZH[key]) {
-    return { ...base, ...MARVEL_OBJECTS_ZH[key] };
-  }
-  if (MARVEL_OBJECTS_EXTRA[l] && MARVEL_OBJECTS_EXTRA[l][key]) {
-    return { ...base, ...MARVEL_OBJECTS_EXTRA[l][key] };
-  }
-  return base;
+  if (l === 'en') return base;
+  const over = l === 'es' ? MARVEL_OBJECTS_ES[key] : l === 'zh' ? MARVEL_OBJECTS_ZH[key] : MARVEL_OBJECTS_EXTRA[l] && MARVEL_OBJECTS_EXTRA[l][key];
+  return over ? mergeLayers(base, over) : base;
 }
 
+const TOUR_TEXT_FIELDS = ['title', 'narration'];
+/** Guardians tour: objectId / zoom / camera always come from the en stops; only text is localized. */
 export function getMarvelTourStops(lang = 'en') {
   const l = normalizeLang(lang);
-  if (MARVEL_GUIDED_TOUR_STOPS_EXTRA[l]) return MARVEL_GUIDED_TOUR_STOPS_EXTRA[l];
-  return MARVEL_GUIDED_TOUR_STOPS[l] || MARVEL_GUIDED_TOUR_STOPS.en;
+  const en = MARVEL_GUIDED_TOUR_STOPS.en;
+  const over = MARVEL_GUIDED_TOUR_STOPS_EXTRA[l] || (l !== 'en' && MARVEL_GUIDED_TOUR_STOPS[l]);
+  if (!over) return en;
+  return en.map((stop, i) => {
+    const loc = over[i] || {};
+    const out = { ...stop };
+    for (const f of TOUR_TEXT_FIELDS) if (loc[f]) out[f] = loc[f];
+    return out;
+  });
 }
 
 export function getMarvelQuizQuestions(lang = 'en') {
@@ -1071,6 +1154,9 @@ export function translateLabelSub(sub, lang = 'en') {
       .replace(/AU from Sun/g, 'UA del Sol')
       .replace(/M km from Earth/g, 'M km de la Tierra')
       .replace(/billion km • radio/g, 'mil millones km • radio')
+      .replace(/thousand light-years away/g, 'mil años luz de distancia')
+      .replace(/million light-years away/g, 'millones de años luz de distancia')
+      .replace(/billion light-years away/g, 'mil millones de años luz de distancia')
       .replace(/thousand light-years/g, 'mil años luz')
       .replace(/million light-years/g, 'millones de años luz')
       .replace(/billion light-years/g, 'mil millones de años luz')
@@ -1085,8 +1171,9 @@ export function translateLabelSub(sub, lang = 'en') {
       .replace(/\bgas giant\b/g, 'gigante gaseoso')
       .replace(/\brocky\b/g, 'rocoso')
       .replace(/year:/g, 'año:')
-      .replace(/days/g, 'días')
-      .replace(/years/g, 'años');
+      .replace(/\bhours\b/g, 'horas')
+      .replace(/\bdays\b/g, 'días')
+      .replace(/\byears\b/g, 'años');
   } else if (l === 'zh') {
     s = s
       .replace(/Our star • sunlight takes 8 min 20 s to reach Earth/g, '我们的母恒星 • 阳光到达地球需 8 分 20 秒')
@@ -1101,6 +1188,9 @@ export function translateLabelSub(sub, lang = 'en') {
       .replace(/AU from Sun/g, 'AU（距太阳）')
       .replace(/M km from Earth/g, '百万公里（距地球）')
       .replace(/billion km • radio/g, '十亿公里 • 无线电耗时')
+      .replace(/thousand light-years away/g, '千光年远')
+      .replace(/million light-years away/g, '百万光年远')
+      .replace(/billion light-years away/g, '十亿光年远')
       .replace(/thousand light-years/g, '千光年')
       .replace(/million light-years/g, '百万光年')
       .replace(/billion light-years/g, '十亿光年')
@@ -1115,8 +1205,9 @@ export function translateLabelSub(sub, lang = 'en') {
       .replace(/\bgas giant\b/g, '气态巨行星')
       .replace(/\brocky\b/g, '岩质行星')
       .replace(/year:/g, '公转周期:')
-      .replace(/days/g, '天')
-      .replace(/years/g, '年');
+      .replace(/\bhours\b/g, '小时')
+      .replace(/\bdays\b/g, '天')
+      .replace(/\byears\b/g, '年');
   } else if (l === 'ja') {
     s = s
       .replace(/Our star • sunlight takes 8 min 20 s to reach Earth/g, '私たちの恒星 • 太陽光は8分20秒で地球に届く')
@@ -1124,21 +1215,33 @@ export function translateLabelSub(sub, lang = 'en') {
       .replace(/light-years from the centre/g, '光年（銀河中心から）')
       .replace(/105,700 light-years across • 200–400 billion stars/g, '直径105,700光年 • 2,000億〜4,000億個の恒星')
       .replace(/~80 galaxies within 10 million light-years/g, '1,000万光年以内の約80個の銀河')
+      .replace(/Light from 13\.8 billion years ago, 46 billion light-years away in every direction/g, '138億年前の光 • 全方向に460億光年')
       .replace(/km away • (\d+)% lit/g, 'km先 • 照度$1%')
+      .replace(/km up • 27,600 km\/h/g, 'km上空 • 27,600 km/h')
       .replace(/AU from the Sun/g, 'AU（太陽から）')
       .replace(/AU from Sun/g, 'AU（太陽から）')
       .replace(/M km from Earth/g, '百万km（地球から）')
+      .replace(/billion km • radio/g, '十億km • 電波往復')
+      .replace(/thousand light-years away/g, '千光年先')
+      .replace(/million light-years away/g, '百万光年先')
+      .replace(/billion light-years away/g, '十億光年先')
       .replace(/thousand light-years/g, '千光年')
       .replace(/million light-years/g, '百万光年')
       .replace(/billion light-years/g, '十億光年')
       .replace(/light-years away/g, '光年先')
       .replace(/light-years/g, '光年')
       .replace(/habitable zone/g, 'ハビタブルゾーン')
+      .replace(/\bsub-Earth\b/g, '準地球型')
+      .replace(/\bEarth-sized\b/g, '地球サイズ')
+      .replace(/\bsuper-Earth\b/g, 'スーパーアース')
+      .replace(/\bsub-Neptune\b/g, 'ミニネプチューン')
+      .replace(/\bNeptune-like\b/g, '海王星型')
       .replace(/\bgas giant\b/g, '巨大ガス惑星')
       .replace(/\brocky\b/g, '岩石惑星')
       .replace(/year:/g, '公転周期:')
-      .replace(/days/g, '日')
-      .replace(/years/g, '年');
+      .replace(/\bhours\b/g, '時間')
+      .replace(/\bdays\b/g, '日')
+      .replace(/\byears\b/g, '年');
   } else if (l === 'ko') {
     s = s
       .replace(/Our star • sunlight takes 8 min 20 s to reach Earth/g, '우리의 항성 • 태양빛이 지구까지 8분 20초 소요')
@@ -1146,81 +1249,126 @@ export function translateLabelSub(sub, lang = 'en') {
       .replace(/light-years from the centre/g, '광년 (은하 중심으로부터)')
       .replace(/105,700 light-years across • 200–400 billion stars/g, '지름 105,700광년 • 2,000억~4,000억 개의 별')
       .replace(/~80 galaxies within 10 million light-years/g, '1,000만 광년 이내의 약 80개 은하')
+      .replace(/Light from 13\.8 billion years ago, 46 billion light-years away in every direction/g, '138억 년 전의 빛 • 모든 방향으로 460억 광년')
       .replace(/km away • (\d+)% lit/g, 'km 거리 • $1% 조도')
+      .replace(/km up • 27,600 km\/h/g, 'km 상공 • 27,600 km/h')
       .replace(/AU from the Sun/g, 'AU (태양으로부터)')
       .replace(/AU from Sun/g, 'AU (태양으로부터)')
       .replace(/M km from Earth/g, '백만 km (지구로부터)')
+      .replace(/billion km • radio/g, '십억 km • 전파 도달')
+      .replace(/thousand light-years away/g, '천 광년 거리')
+      .replace(/million light-years away/g, '백만 광년 거리')
+      .replace(/billion light-years away/g, '십억 광년 거리')
       .replace(/thousand light-years/g, '천 광년')
       .replace(/million light-years/g, '백만 광년')
       .replace(/billion light-years/g, '십억 광년')
       .replace(/light-years away/g, '광년 거리')
       .replace(/light-years/g, '광년')
       .replace(/habitable zone/g, '생명체 거주가능영역')
+      .replace(/\bsub-Earth\b/g, '준지구형')
+      .replace(/\bEarth-sized\b/g, '지구 크기')
+      .replace(/\bsuper-Earth\b/g, '슈퍼지구')
+      .replace(/\bsub-Neptune\b/g, '미니해왕성')
+      .replace(/\bNeptune-like\b/g, '해왕성형')
       .replace(/\bgas giant\b/g, '가스 거대 행성')
       .replace(/\brocky\b/g, '암석 행성')
       .replace(/year:/g, '공전 주기:')
-      .replace(/days/g, '일')
-      .replace(/years/g, '년');
+      .replace(/\bhours\b/g, '시간')
+      .replace(/\bdays\b/g, '일')
+      .replace(/\byears\b/g, '년');
   } else if (l === 'pt') {
     s = s
       .replace(/Our star • sunlight takes 8 min 20 s to reach Earth/g, 'Nossa estrela • a luz leva 8 min 20 s até a Terra')
       .replace(/4\.3 million solar masses • 26,670 light-years away/g, '4,3 milhões de massas solares • a 26.670 anos-luz')
       .replace(/light-years from the centre/g, 'anos-luz do centro')
       .replace(/km away • (\d+)% lit/g, 'km de distância • $1% iluminada')
+      .replace(/km up • 27,600 km\/h/g, 'km de altitude • 27.600 km/h')
       .replace(/AU from the Sun/g, 'UA do Sol')
       .replace(/AU from Sun/g, 'UA do Sol')
       .replace(/M km from Earth/g, 'M km da Terra')
+      .replace(/billion km • radio/g, 'bilhões km • rádio')
+      .replace(/thousand light-years away/g, 'mil anos-luz de distância')
+      .replace(/million light-years away/g, 'milhões de anos-luz de distância')
+      .replace(/billion light-years away/g, 'bilhões de anos-luz de distância')
       .replace(/thousand light-years/g, 'mil anos-luz')
       .replace(/million light-years/g, 'milhões de anos-luz')
       .replace(/billion light-years/g, 'bilhões de anos-luz')
       .replace(/light-years away/g, 'anos-luz de distância')
       .replace(/light-years/g, 'anos-luz')
       .replace(/habitable zone/g, 'zona habitável')
+      .replace(/\bsub-Earth\b/g, 'sub-Terra')
+      .replace(/\bEarth-sized\b/g, 'tamanho da Terra')
+      .replace(/\bsuper-Earth\b/g, 'super-Terra')
+      .replace(/\bsub-Neptune\b/g, 'sub-Netuno')
+      .replace(/\bNeptune-like\b/g, 'tipo Netuno')
       .replace(/\bgas giant\b/g, 'gigante gasoso')
       .replace(/\brocky\b/g, 'rochoso')
       .replace(/year:/g, 'ano:')
-      .replace(/days/g, 'dias')
-      .replace(/years/g, 'anos');
+      .replace(/\bhours\b/g, 'horas')
+      .replace(/\bdays\b/g, 'dias')
+      .replace(/\byears\b/g, 'anos');
   } else if (l === 'fr') {
     s = s
       .replace(/Our star • sunlight takes 8 min 20 s to reach Earth/g, 'Notre étoile • la lumière met 8 min 20 s jusqu’à la Terre')
       .replace(/4\.3 million solar masses • 26,670 light-years away/g, '4,3 millions de masses solaires • à 26 670 années-lumière')
       .replace(/light-years from the centre/g, 'années-lumière du centre')
       .replace(/km away • (\d+)% lit/g, 'km de distance • $1 % éclairée')
+      .replace(/km up • 27,600 km\/h/g, 'km d’altitude • 27 600 km/h')
       .replace(/AU from the Sun/g, 'UA du Soleil')
       .replace(/AU from Sun/g, 'UA du Soleil')
       .replace(/M km from Earth/g, 'M km de la Terre')
+      .replace(/billion km • radio/g, 'milliards km • radio')
+      .replace(/thousand light-years away/g, 'milliers d’années-lumière')
+      .replace(/million light-years away/g, 'millions d’années-lumière')
+      .replace(/billion light-years away/g, 'milliards d’années-lumière')
       .replace(/thousand light-years/g, 'milliers d’années-lumière')
       .replace(/million light-years/g, 'millions d’années-lumière')
       .replace(/billion light-years/g, 'milliards d’années-lumière')
       .replace(/light-years away/g, 'années-lumière')
       .replace(/light-years/g, 'années-lumière')
       .replace(/habitable zone/g, 'zone habitable')
+      .replace(/\bsub-Earth\b/g, 'sous-Terre')
+      .replace(/\bEarth-sized\b/g, 'taille terrestre')
+      .replace(/\bsuper-Earth\b/g, 'super-Terre')
+      .replace(/\bsub-Neptune\b/g, 'sous-Neptune')
+      .replace(/\bNeptune-like\b/g, 'type Neptune')
       .replace(/\bgas giant\b/g, 'géante gazeuse')
       .replace(/\brocky\b/g, 'rocheuse')
       .replace(/year:/g, 'année :')
-      .replace(/days/g, 'jours')
-      .replace(/years/g, 'ans');
+      .replace(/\bhours\b/g, 'heures')
+      .replace(/\bdays\b/g, 'jours')
+      .replace(/\byears\b/g, 'ans');
   } else if (l === 'it') {
     s = s
       .replace(/Our star • sunlight takes 8 min 20 s to reach Earth/g, 'La nostra stella • la luce impiega 8 min 20 s fino alla Terra')
       .replace(/4\.3 million solar masses • 26,670 light-years away/g, '4,3 milioni di masse solari • a 26.670 anni luce')
       .replace(/light-years from the centre/g, 'anni luce dal centro')
       .replace(/km away • (\d+)% lit/g, 'km di distanza • $1% illuminata')
+      .replace(/km up • 27,600 km\/h/g, 'km di quota • 27.600 km/h')
       .replace(/AU from the Sun/g, 'UA dal Sole')
       .replace(/AU from Sun/g, 'UA dal Sole')
       .replace(/M km from Earth/g, 'M km dalla Terra')
+      .replace(/billion km • radio/g, 'miliardi km • radio')
+      .replace(/thousand light-years away/g, 'mila anni luce di distanza')
+      .replace(/million light-years away/g, 'milioni di anni luce di distanza')
+      .replace(/billion light-years away/g, 'miliardi di anni luce di distanza')
       .replace(/thousand light-years/g, 'mila anni luce')
       .replace(/million light-years/g, 'milioni di anni luce')
       .replace(/billion light-years/g, 'miliardi di anni luce')
       .replace(/light-years away/g, 'anni luce di distanza')
       .replace(/light-years/g, 'anni luce')
       .replace(/habitable zone/g, 'zona abitabile')
+      .replace(/\bsub-Earth\b/g, 'sub-Terra')
+      .replace(/\bEarth-sized\b/g, 'dimensione terrestre')
+      .replace(/\bsuper-Earth\b/g, 'super-Terra')
+      .replace(/\bsub-Neptune\b/g, 'sub-Nettuno')
+      .replace(/\bNeptune-like\b/g, 'tipo Nettuno')
       .replace(/\bgas giant\b/g, 'gigante gassoso')
       .replace(/\brocky\b/g, 'roccioso')
       .replace(/year:/g, 'anno:')
-      .replace(/days/g, 'giorni')
-      .replace(/years/g, 'anni');
+      .replace(/\bhours\b/g, 'ore')
+      .replace(/\bdays\b/g, 'giorni')
+      .replace(/\byears\b/g, 'anni');
   }
   return s;
 }

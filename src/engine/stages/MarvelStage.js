@@ -210,7 +210,7 @@ export class MarvelStage {
       viewDistance: () => viewDist,
       alpha: (z) => (this.ctx.universeMode === 'marvel' ? stageVisibility(z, stageIdx) : 0),
       pick,
-      getInfo: () => getMarvelObject(id)
+      getInfo: (lang) => getMarvelObject(id, lang || this.ctx.lang)
     });
   }
 
@@ -886,7 +886,7 @@ export class MarvelStage {
   // SCALE 3 — Sakaar, Titan & Kree Rim (18–62 units)
   // ---------------------------------------------------------------------------
   _buildScale3() {
-    // 1. Sakaar & The Devil's Anus Wormhole
+    // 1. Sakaar & The Grand Magnetar Wormhole
     const sakaarPos = new THREE.Vector3(26, 5, -22);
     const sakaarGroup = new THREE.Group();
     sakaarGroup.position.copy(sakaarPos);
@@ -907,7 +907,7 @@ export class MarvelStage {
     );
     sakaarGroup.add(sakaarPlanet);
 
-    // Swirling Einstein-Rosen Wormhole vortex ("The Devil's Anus") above Sakaar
+    // Swirling Einstein-Rosen Wormhole vortex above Sakaar
     const wormholeGroup = new THREE.Group();
     wormholeGroup.position.set(2.9, 1.8, 0.5);
     for (let i = 0; i < 4; i++) {
@@ -928,7 +928,7 @@ export class MarvelStage {
     this.spinMeshes.push({ mesh: sakaarPlanet, speed: 0.24 });
 
     const sakaarLabel = this._labelSpec({
-      name: "Sakaar & Devil's Anus Wormhole",
+      name: 'Sakaar & Grand Magnetar Wormhole',
       sub: 'Einstein-Rosen Singularity Nexus · Thor: Ragnarok',
       position: sakaarPos,
       stageIndex: 3,
@@ -939,7 +939,7 @@ export class MarvelStage {
     });
 
     this._registerMarvel('sakaar', {
-      name: "Sakaar & The Devil's Anus Wormhole",
+      name: 'Sakaar & The Grand Magnetar Wormhole',
       stageIndex: 3,
       mesh: sakaarGroup,
       radius: 3.1,
