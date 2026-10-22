@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta
     http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; object-src 'none'; base-uri 'self'; worker-src 'self' blob:;"
+    content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; worker-src 'self' blob:;"
   />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="description" content="Cosmic Explorer 3D — a free, open, photoreal 3D journey from Earth and the Moon to the Voyager probes, nearby exoplanets, the Milky Way and the edge of the observable universe." />
-  <title>Cosmic Explorer 3D — From Earth & Moon to the Edge of the Universe</title>
+  <title>Cosmic Explorer 3D — From Earth &amp; Moon to the Edge of the Universe</title>
   <link rel="stylesheet" href="./styles.css" />
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FMWKYPEY68"></script>
 </head>
 <body>
   <!-- WebGL universe -->
@@ -26,10 +28,10 @@
   <div id="loading-screen" class="loading-screen" role="status" aria-live="polite">
     <div class="loading-card">
       <div class="loading-logo" aria-hidden="true">🚀</div>
-      <h1 class="loading-title">Cosmic Explorer 3D</h1>
+      <h1 id="loading-title" class="loading-title">Cosmic Explorer 3D</h1>
       <p id="loading-status" class="loading-status">Warming up the engines…</p>
       <div class="loading-bar" aria-hidden="true"><div id="loading-bar-fill" class="loading-bar-fill"></div></div>
-      <p class="loading-hint">Real NASA &amp; ESO imagery • real orbits for today’s date • free &amp; open for every curious kid</p>
+      <p id="loading-hint" class="loading-hint">Real NASA &amp; ESO imagery • real orbits for today’s date • free &amp; open for every curious kid</p>
     </div>
   </div>
 
@@ -38,40 +40,56 @@
     <div class="brand-cluster">
       <div class="brand-logo" aria-hidden="true">🚀</div>
       <div>
-        <h1 class="brand-title">Cosmic Explorer 3D</h1>
-        <p class="brand-subtitle">Free &amp; open interactive universe for curious kids</p>
+        <h1 id="brand-title" class="brand-title">Cosmic Explorer 3D</h1>
+        <p id="brand-subtitle" class="brand-subtitle">Free &amp; open interactive universe for curious kids</p>
       </div>
+    </div>
+    <div id="universe-mode-tabs" class="universe-mode-tabs" role="tablist" aria-label="Universe mode switcher">
+      <button id="btn-universe-nasa" type="button" class="universe-tab active" data-universe="nasa" role="tab" aria-selected="true" title="NASA Cosmos" aria-label="NASA Cosmos">🔭 NASA Cosmos</button>
+      <button id="btn-universe-marvel" type="button" class="universe-tab marvel-tab" data-universe="marvel" role="tab" aria-selected="false" title="Guardians of the Galaxy" aria-label="Guardians of the Galaxy">🦝 Guardians of the Galaxy</button>
     </div>
     <nav id="scale-stepper" class="scale-stepper" aria-label="Cosmic zoom scales"></nav>
     <div class="header-actions">
+      <div id="lang-switcher" class="lang-switcher" role="group" aria-label="Language switcher">
+        <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true" title="English">EN</button>
+        <button type="button" class="lang-btn" data-lang="es" aria-pressed="false" title="Español">ES</button>
+        <button type="button" class="lang-btn" data-lang="zh" aria-pressed="false" title="中文">中文</button>
+        <button type="button" class="lang-btn" data-lang="ja" aria-pressed="false" title="日本語">日本語</button>
+        <button type="button" class="lang-btn" data-lang="ko" aria-pressed="false" title="한국어">한국어</button>
+        <button type="button" class="lang-btn" data-lang="pt" aria-pressed="false" title="Português">PT</button>
+        <button type="button" class="lang-btn" data-lang="fr" aria-pressed="false" title="Français">FR</button>
+        <button type="button" class="lang-btn" data-lang="it" aria-pressed="false" title="Italiano">IT</button>
+      </div>
       <button id="btn-open-exoplanets" type="button" class="action-pill exo-btn" title="Browse and fly to all 6,451 confirmed NASA exoplanets">🪐 6,451 Exoplanets</button>
       <button id="btn-start-tour" type="button" class="action-pill tour-btn">🧭 Guided Tour</button>
       <button id="btn-open-quiz" type="button" class="action-pill quiz-btn">🏆 Space Quiz</button>
       <button id="btn-toggle-theme" type="button" class="action-pill theme-btn" aria-pressed="false" title="Switch between Dark Cosmos and Light Star-Atlas Mode">☀️ Light Mode</button>
       <button id="btn-toggle-panels" type="button" class="action-pill ghost-btn" aria-pressed="false" title="Hide panels for a clean view">🖼️ Clean View</button>
+      <button id="btn-mobile-options" type="button" class="action-pill ghost-btn mobile-only-btn" aria-pressed="false" title="View options (Orbits, Labels, Glow, Scale)">⚙️</button>
     </div>
   </header>
 
   <!-- Quick target tracker -->
   <section class="quick-tracker-bar" aria-label="Quick cosmic target tracker">
+    <div id="marvel-cat-bar" class="marvel-cat-bar hidden" role="tablist" aria-label="Marvel cosmic filter"></div>
     <div class="tracker-bar-left">
-      <span class="tracker-label">🎯 Fly to:</span>
+      <span id="tracker-fly-label" class="tracker-label">🎯 Fly to:</span>
       <div id="quick-tracker-chips" class="tracker-chips"></div>
     </div>
-    <div class="voyager-live-pill" title="Live heliocentric telemetry (click any spacecraft to fly there)">
+    <div id="voyager-live-pill" class="voyager-live-pill" title="Live heliocentric telemetry (click any spacecraft to fly there)">
       <span class="pulse-dot" aria-hidden="true"></span>
-      <button id="btn-pill-roadster" type="button" class="live-pill-link"><strong>🚗 Roadster:</strong> <span id="live-roadster-dist">—</span></button>
+      <button id="btn-pill-roadster" type="button" class="live-pill-link"><strong id="label-pill-roadster">🚗 Roadster:</strong> <span id="live-roadster-dist">—</span></button>
       <span class="divider">|</span>
-      <button id="btn-pill-v1" type="button" class="live-pill-link"><strong>Voyager 1:</strong> <span id="live-v1-dist">—</span></button>
+      <button id="btn-pill-v1" type="button" class="live-pill-link"><strong id="label-pill-v1">Voyager 1:</strong> <span id="live-v1-dist">—</span></button>
       <span class="divider">|</span>
-      <button id="btn-pill-v2" type="button" class="live-pill-link"><strong>Voyager 2:</strong> <span id="live-v2-dist">—</span></button>
+      <button id="btn-pill-v2" type="button" class="live-pill-link"><strong id="label-pill-v2">Voyager 2:</strong> <span id="live-v2-dist">—</span></button>
     </div>
   </section>
 
   <!-- Left panel: current scale + view options + tour -->
   <aside class="hud-left-panel" aria-label="Current cosmic scale overview">
     <div class="scale-card">
-      <div class="scale-card-eyebrow">CURRENT COSMIC SCALE</div>
+      <div id="scale-card-eyebrow" class="scale-card-eyebrow">CURRENT COSMIC SCALE</div>
       <h2 id="current-scale-title" class="scale-card-title">Earth &amp; Moon</h2>
       <div id="current-scale-range" class="scale-card-range">10,000 km – 1 million km</div>
       <p id="current-scale-desc" class="scale-card-desc">Drag to orbit, scroll to zoom, click any world to fly there.</p>
@@ -85,7 +103,7 @@
         <button id="btn-chip-theme" type="button" class="toggle-chip" aria-pressed="false" title="Switch between Dark Cosmos and Light Star-Atlas Mode">☀️ Light mode</button>
       </div>
 
-      <div class="controls-hint">
+      <div id="controls-hint-bar" class="controls-hint">
         <span>🖱️ <strong>Drag</strong> orbit</span>
         <span>🔍 <strong>Scroll</strong> zoom</span>
         <span>👆 <strong>Click</strong> fly to</span>
@@ -94,7 +112,7 @@
 
     <div id="guided-tour-bar" class="guided-tour-card hidden" role="region" aria-live="polite">
       <div class="tour-header">
-        <span class="tour-badge">🧭 AUTOPILOT COSMIC TOUR</span>
+        <span id="tour-badge-label" class="tour-badge">🧭 AUTOPILOT COSMIC TOUR</span>
         <button id="btn-tour-close" type="button" class="icon-close-btn" aria-label="Exit guided tour">✕</button>
       </div>
       <h3 id="tour-step-title" class="tour-title">Stop 1: Spaceship Earth</h3>
@@ -107,21 +125,25 @@
   </aside>
 
   <!-- Right panel: inspector -->
-  <aside class="hud-right-inspector" aria-label="Selected cosmic object inspector">
+  <aside class="hud-right-inspector is-collapsed-mobile" aria-label="Selected cosmic object inspector">
     <div class="inspector-header">
       <span id="inspector-badge" class="inspector-badge">🌍 Where we live!</span>
-      <button id="btn-read-aloud" type="button" class="read-aloud-btn">🔊 Read aloud</button>
+      <div class="inspector-header-actions">
+        <button id="btn-read-aloud" type="button" class="read-aloud-btn">🔊 Read aloud</button>
+        <button id="btn-toggle-inspector" type="button" class="inspector-collapse-btn" aria-expanded="false" aria-label="Expand or collapse object details">▲ Details</button>
+      </div>
     </div>
     <h2 id="inspector-title" class="inspector-title">Planet Earth</h2>
     <div id="inspector-pronounce" class="inspector-pronounce"></div>
     <p id="inspector-summary" class="inspector-summary"></p>
+    <div id="inspector-marvel-science" class="marvel-science-box hidden"></div>
     <div id="inspector-voyager-live" class="voyager-live-box hidden" aria-live="polite"></div>
     <div id="inspector-exoplanets" class="exoplanet-box hidden"></div>
-    <h3 class="section-subtitle">📊 Quick stats</h3>
+    <h3 id="subtitle-quick-stats" class="section-subtitle">📊 Quick stats</h3>
     <div id="inspector-stats-grid" class="stats-grid"></div>
-    <h3 class="section-subtitle">✨ Mind-blowing facts</h3>
+    <h3 id="subtitle-fun-facts" class="section-subtitle">✨ Mind-blowing facts</h3>
     <ul id="inspector-facts-list" class="fun-facts-list"></ul>
-    <h3 class="section-subtitle">🚀 How long to travel here?</h3>
+    <h3 id="subtitle-travel-times" class="section-subtitle">🚀 How long to travel here?</h3>
     <div id="inspector-travel-times" class="travel-times-box"></div>
   </aside>
 
@@ -141,7 +163,7 @@
     <div class="hud-bottom-zoom" aria-label="Continuous cosmic zoom slider">
       <button id="btn-zoom-in" type="button" class="zoom-step-btn" aria-label="Zoom in">➕ In</button>
       <div class="zoom-slider-wrapper">
-        <div class="zoom-scale-markers" aria-hidden="true">
+        <div id="zoom-scale-markers" class="zoom-scale-markers" aria-hidden="true">
           <span>🌍 Earth &amp; Moon</span>
           <span>☀️ Solar System &amp; Voyagers</span>
           <span>⭐ Nearby stars &amp; exoplanets</span>
@@ -162,7 +184,7 @@
       <div class="modal-header">
         <div>
           <h2 id="exo-modal-title">🪐 NASA Exoplanet Archive — All 6,451 Confirmed Worlds</h2>
-          <p class="exo-modal-subtitle">Every confirmed exoplanet outside our Solar System (4,847 host star systems • 152 habitable-zone candidates) plotted at true 3D RA/Dec &amp; Gaia distance. Click any star or planet to materialize and fly there in 3D!</p>
+          <p id="exo-modal-subtitle" class="exo-modal-subtitle">Every confirmed exoplanet outside our Solar System (4,847 host star systems • 152 habitable-zone candidates) plotted at true 3D RA/Dec &amp; Gaia distance. Click any star or planet to materialize and fly there in 3D!</p>
         </div>
         <button id="btn-close-exoplanets" type="button" class="icon-close-btn" aria-label="Close Exoplanet Archive">✕</button>
       </div>
@@ -200,7 +222,7 @@
         <h2 id="credits-title">Credits &amp; data sources</h2>
         <button id="btn-close-credits" type="button" class="icon-close-btn" aria-label="Close credits">✕</button>
       </div>
-      <div class="modal-body credits-body">
+      <div id="credits-body" class="modal-body credits-body">
         <p>Cosmic Explorer 3D is free and open source (MIT). It renders real data:</p>
         <ul>
           <li><strong>Earth:</strong> NASA Visible Earth Blue Marble (land/ocean), Black Marble 2016 (night lights), NASA cloud composite — public domain.</li>

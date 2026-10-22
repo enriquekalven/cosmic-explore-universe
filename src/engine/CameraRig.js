@@ -30,6 +30,7 @@ export class CameraRig {
     this._dragging = false;
     this._moved = 0;
     this._pinchDist = 0;
+    this._wasPinching = false;
     this._bind();
   }
 
@@ -86,12 +87,16 @@ export class CameraRig {
     const dom = this.dom;
     dom.style.touchAction = 'none';
     dom.addEventListener('pointerdown', (e) => {
-      dom.setPointerCapture(e.pointerId);
+      try {
+        dom.setPointerCapture(e.pointerId);
+      } catch {}
       this._pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (this._pointers.size === 1) {
         this._dragging = true;
         this._moved = 0;
-      } else if (this._pointers.size === 2) {
+        this._wasPinching = false;
+      } else if (this._pointers.size >= 2) {
+        this._wasPinching = true;
         this._pinchDist = this._pinchDistance();
       }
     });
@@ -102,12 +107,13 @@ export class CameraRig {
       const dy = e.clientY - p.y;
       p.x = e.clientX;
       p.y = e.clientY;
-      if (this._pointers.size === 1 && this._dragging) {
+      if (this._pointers.size === 1 && this._dragging && !this._wasPinching) {
         this._moved += Math.abs(dx) + Math.abs(dy);
         this.targetYaw -= dx * 0.0055;
         this.targetPitch = clamp(this.targetPitch + dy * 0.0055, -1.52, 1.52);
         this.onInteract();
-      } else if (this._pointers.size === 2) {
+      } else if (this._pointers.size >= 2) {
+        this._wasPinching = true;
         const d = this._pinchDistance();
         if (this._pinchDist > 0 && d > 0) {
           const ratio = this._pinchDist / d;
@@ -120,12 +126,17 @@ export class CameraRig {
     const end = (e) => {
       const had = this._pointers.has(e.pointerId);
       this._pointers.delete(e.pointerId);
+      try {
+        dom.releasePointerCapture(e.pointerId);
+      } catch {}
       if (had && this._dragging && this._pointers.size === 0) {
         this._dragging = false;
-        if (this._moved < 6) {
+        const tapThreshold = e.pointerType === 'touch' ? 14 : 6;
+        if (!this._wasPinching && this._moved < tapThreshold) {
           const rect = dom.getBoundingClientRect();
           this.onClick(e.clientX - rect.left, e.clientY - rect.top);
         }
+        this._wasPinching = false;
       }
       if (this._pointers.size < 2) this._pinchDist = 0;
     };

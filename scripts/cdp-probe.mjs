@@ -26,6 +26,7 @@ const chrome = spawn(
     '--ignore-gpu-blocklist',
     '--no-first-run',
     '--no-default-browser-check',
+    '--autoplay-policy=no-user-gesture-required',
     '--window-size=1440,900',
     '--hide-scrollbars',
     `--remote-debugging-port=${port}`,

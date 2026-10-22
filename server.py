@@ -30,13 +30,16 @@ class SecureStaticHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header(
             "Content-Security-Policy",
-            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; "
+            "default-src 'self'; script-src 'self' https://www.googletagmanager.com; "
+            "connect-src 'self' https://www.google-analytics.com https://analytics.google.com "
+            "https://region1.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; "
+            "style-src 'self'; img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com; "
             "media-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; worker-src 'self' blob:;",
         )
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
-        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
         if self.path.startswith("/assets/") or self.path.startswith("/vendor/"):
             self.send_header("Cache-Control", "public, max-age=86400")
         else:

@@ -22,6 +22,7 @@ import { SolarSystemStage } from './stages/SolarSystemStage.js';
 import { StellarStage } from './stages/StellarStage.js';
 import { GalaxyStage } from './stages/GalaxyStage.js';
 import { UniverseStage } from './stages/UniverseStage.js';
+import { MarvelStage } from './stages/MarvelStage.js';
 import { describeAny } from '../catalog/describe.js';
 
 export const TIME_SPEEDS = [
@@ -43,9 +44,19 @@ export const STAGE_DEFAULTS = [
   { focus: 'milkyWayDisk', zoom: 93.5, yaw: 0.6, pitch: 0.5 }
 ];
 
+export const MARVEL_STAGE_DEFAULTS = [
+  { focus: 'benatar', zoom: 5.5, yaw: -0.6, pitch: 0.24 },
+  { focus: 'asgard', zoom: 28, yaw: -0.45, pitch: 0.35 },
+  { focus: 'knowhere', zoom: 54, yaw: -0.35, pitch: 0.32 },
+  { focus: 'sakaar', zoom: 76, yaw: 0.3, pitch: 0.36 },
+  { focus: 'arishem', zoom: 92, yaw: 0.4, pitch: 0.28 }
+];
+
 export class CosmicEngine3D {
-  constructor({ canvas, labelContainer, callbacks = {} }) {
+  constructor({ canvas, labelContainer, callbacks = {}, lang = 'en' }) {
     this.canvas = canvas;
+    this.lang = lang;
+    this.universeMode = 'nasa';
     this.cb = {
       onSelect: () => {},
       onZoom: () => {},
@@ -56,6 +67,11 @@ export class CosmicEngine3D {
       ...callbacks
     };
 
+    const isMobile =
+      window.matchMedia('(max-width: 768px), (pointer: coarse)').matches ||
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    this.isMobile = isMobile;
+
     // ---- renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas,
@@ -64,7 +80,7 @@ export class CosmicEngine3D {
       powerPreference: 'high-performance',
       alpha: false
     });
-    this.pixelRatioCap = 1.75;
+    this.pixelRatioCap = isMobile ? 1.5 : 1.75;
     this.pixelRatio = Math.min(window.devicePixelRatio || 1, this.pixelRatioCap);
     const initW = canvas.clientWidth || window.innerWidth || 1280;
     const initH = canvas.clientHeight || window.innerHeight || 800;
@@ -90,6 +106,7 @@ export class CosmicEngine3D {
     this.composer.setSize(initW, initH);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     this.bloom = new UnrealBloomPass(new THREE.Vector2(initW, initH), 0.55, 0.4, 0.9);
+    this.bloom.enabled = !isMobile;
     this.composer.addPass(this.bloom);
     this.composer.addPass(new OutputPass());
 
@@ -100,7 +117,8 @@ export class CosmicEngine3D {
     this.bodies = new BodyFactory(THREE, this.tex);
     this.scale = new ScaleModel();
     this.labels = new LabelLayer(THREE, labelContainer, {
-      onPick: (id) => this.focusOn(id, { fromUser: true })
+      onPick: (id) => this.focusOn(id, { fromUser: true }),
+      lang: this.lang
     });
     this.registry = new Map();
     this.pickables = [];
@@ -126,6 +144,13 @@ export class CosmicEngine3D {
       sunPos: this.sunPos,
       registry: this.registry,
       register: (id, def) => this.register(id, def),
+      focusObject: (id, opts) => this.focusOn(id, { fromUser: true, ...opts }),
+      get stages() {
+        return engine.stages;
+      },
+      get universeMode() {
+        return engine.universeMode;
+      },
       get showOrbits() {
         return engine.showOrbits;
       },
@@ -140,7 +165,15 @@ export class CosmicEngine3D {
       }
     };
 
-    this.stages = [new StellarStage(ctx), new EarthMoonStage(ctx), new SolarSystemStage(ctx), new GalaxyStage(ctx), new UniverseStage(ctx)];
+    this.stages = [
+      new StellarStage(ctx),
+      new EarthMoonStage(ctx),
+      new SolarSystemStage(ctx),
+      new GalaxyStage(ctx),
+      new UniverseStage(ctx)
+    ];
+    this.marvelStage = new MarvelStage(ctx);
+    this.stages.push(this.marvelStage);
 
     // ---- camera & input
     this.zoom = 4.2;
@@ -180,6 +213,7 @@ export class CosmicEngine3D {
       height: this.height
     };
     for (const s of this.stages) s.update(initFrame);
+    this._syncUniverseLabelVisibility();
 
     this.focusOn('earth', { instant: true, zoom: 4.2, silent: true });
     this.rig.setAngles(STAGE_DEFAULTS[0].yaw, STAGE_DEFAULTS[0].pitch, true);
@@ -188,6 +222,35 @@ export class CosmicEngine3D {
     if (typeof ResizeObserver !== 'undefined') {
       this._ro = new ResizeObserver(() => this.resize());
       this._ro.observe(this.canvas);
+    }
+  }
+
+  _syncUniverseLabelVisibility() {
+    const isMarvel = this.universeMode === 'marvel';
+    for (const def of this.registry.values()) {
+      if (def.isMarvel) {
+        def.forceHidden = !isMarvel;
+      } else {
+        // Keep Earth and Sun visible in Marvel mode for context, hide other NASA-only labels
+        def.forceHidden = isMarvel && def.id !== 'earth' && def.id !== 'sun';
+      }
+    }
+  }
+
+  setUniverseMode(mode = 'nasa', { skipFocus = false } = {}) {
+    this.universeMode = mode === 'marvel' ? 'marvel' : 'nasa';
+    if (this.marvelStage) {
+      this.marvelStage.setActive(this.universeMode === 'marvel');
+    }
+    this._syncUniverseLabelVisibility();
+    if (!skipFocus) {
+      if (this.universeMode === 'marvel') {
+        const d = MARVEL_STAGE_DEFAULTS[1]; // Asgard & Nine Realms by default
+        this.focusOn(d.focus, { zoom: d.zoom, yaw: d.yaw, pitch: d.pitch });
+      } else {
+        const d = STAGE_DEFAULTS[0];
+        this.focusOn(d.focus, { zoom: d.zoom, yaw: d.yaw, pitch: d.pitch });
+      }
     }
   }
 
@@ -209,8 +272,13 @@ export class CosmicEngine3D {
     return this.registry.has(id) || (this.stages[0] && this.stages[0].archiveById && this.stages[0].archiveById.has(id));
   }
 
-  getObjectInfo(id) {
-    return describeAny(id);
+  getObjectInfo(id, lang = this.lang) {
+    return describeAny(id, lang);
+  }
+
+  setLanguage(lang = 'en') {
+    this.lang = lang;
+    this.labels.setLanguage(lang);
   }
 
   listIds() {
@@ -224,7 +292,8 @@ export class CosmicEngine3D {
   }
 
   jumpToStage(index) {
-    const d = STAGE_DEFAULTS[index] || STAGE_DEFAULTS[0];
+    const defaults = this.universeMode === 'marvel' ? MARVEL_STAGE_DEFAULTS : STAGE_DEFAULTS;
+    const d = defaults[index] || defaults[0];
     let { yaw, pitch } = d;
     if (d.faceOnGalaxy) ({ yaw, pitch } = this.anglesForDirection(GALACTIC_FRAME.Z, d.tilt || 0));
     this.focusOn(d.focus, { zoom: d.zoom, yaw, pitch });
@@ -251,8 +320,6 @@ export class CosmicEngine3D {
     const targetZoom = zoom !== undefined ? zoom : this.scale.zoomForDistance(def.viewDistance());
     this.setTargetZoom(targetZoom);
     if (instant) this.zoom = this.targetZoom;
-    // Objects may suggest a good vantage point (e.g. Voyager: keep the Sun in frame) when the
-    // caller did not ask for specific angles.
     if (yaw === undefined && pitch === undefined && !silent && typeof def.preferredView === 'function') {
       const pv = def.preferredView(this);
       if (pv) ({ yaw, pitch } = pv);
@@ -266,6 +333,7 @@ export class CosmicEngine3D {
 
   getState() {
     return {
+      u: this.universeMode === 'marvel' ? 'marvel' : undefined,
       f: this.focusedId,
       z: Number(this.targetZoom.toFixed(2)),
       y: Number(this.rig.targetYaw.toFixed(3)),
@@ -277,12 +345,19 @@ export class CosmicEngine3D {
 
   applyState(s) {
     if (!s) return;
+    if (s.u === 'marvel') {
+      this.setUniverseMode('marvel', { skipFocus: true });
+    }
     if (s.m === 't') this.setScaleMode('true');
     if (s.f) {
       if (!this.registry.has(s.f) && this.stages[0] && typeof this.stages[0].ensureArchiveSystem === 'function') {
         this.stages[0].ensureArchiveSystem(s.f);
       }
       if (this.registry.has(s.f)) {
+        const def = this.registry.get(s.f);
+        if (def && def.isMarvel && this.universeMode !== 'marvel') {
+          this.setUniverseMode('marvel', { skipFocus: true });
+        }
         this.focusOn(s.f, { zoom: typeof s.z === 'number' ? s.z : undefined, yaw: s.y, pitch: s.p, instant: true, silent: false });
       }
     } else if (typeof s.z === 'number') {
@@ -371,11 +446,14 @@ export class CosmicEngine3D {
       }
       if (!visible) continue;
       const id = h.object.userData.focusId;
-      if (id && id !== this.focusedId) {
+      if (!id) continue;
+      const def = this.registry.get(id);
+      if (def && def.forceHidden) continue;
+      if (id !== this.focusedId) {
         this.focusOn(id, { fromUser: true });
         return;
       }
-      if (id) return;
+      return;
     }
   }
 
@@ -480,7 +558,11 @@ export class CosmicEngine3D {
       this.cb.onStage(stage);
     }
 
-    this.composer.render();
+    if (this.bloom && this.bloom.enabled) {
+      this.composer.render();
+    } else {
+      this.renderer.render(this.scene, this.camera);
+    }
     this._frameCount++;
     if (this._frameCount === 2) this.cb.onReady();
   }

@@ -16,6 +16,8 @@
   --accent-rose: #f43f5e;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --hud-header-bottom: 76px;
+  --tracker-bar-bottom: 124px;
 }
 
 * {
@@ -28,12 +30,15 @@ html,
 body {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   background-color: var(--bg-deep);
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   -webkit-font-smoothing: antialiased;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 #cosmic-canvas {
@@ -41,10 +46,12 @@ body {
   inset: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   display: block;
   z-index: 1;
   cursor: grab;
   outline: none;
+  touch-action: none;
 }
 
 /* ==========================================================================
@@ -201,7 +208,7 @@ body {
    ========================================================================== */
 .quick-tracker-bar {
   position: fixed;
-  top: 76px;
+  top: var(--hud-header-bottom, 76px);
   left: 16px;
   right: 16px;
   z-index: 10;
@@ -300,7 +307,7 @@ body {
    ========================================================================== */
 .hud-left-panel {
   position: fixed;
-  top: 124px;
+  top: var(--tracker-bar-bottom, 124px);
   left: 16px;
   width: 300px;
   z-index: 10;
@@ -425,7 +432,7 @@ body {
    ========================================================================== */
 .hud-right-inspector {
   position: fixed;
-  top: 124px;
+  top: var(--tracker-bar-bottom, 124px);
   right: 16px;
   bottom: 84px;
   width: 350px;
@@ -1696,5 +1703,595 @@ body.light-mode .theme-btn {
   border-color: rgba(15, 23, 42, 0.3);
 }
 
+/* Language Switcher (8 languages: EN, ES, ZH, JA, KO, PT, FR, IT) */
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 10px;
+  padding: 2px;
+  gap: 1px;
+  flex-shrink: 0;
+}
 
+.lang-btn {
+  padding: 4px 6px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
 
+.lang-btn:hover {
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.16);
+}
+
+.lang-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+}
+
+body.light-mode .lang-switcher {
+  background: rgba(241, 245, 249, 0.94);
+  border-color: rgba(100, 116, 139, 0.35);
+}
+
+body.light-mode .lang-btn {
+  color: #334155;
+}
+
+body.light-mode .lang-btn:hover {
+  color: #0f172a;
+  background: rgba(2, 132, 199, 0.14);
+}
+
+body.light-mode .lang-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28);
+}
+
+/* ==========================================================================
+   v4 — Universe Mode Tabs (NASA Cosmos vs. Marvel Guardians & Thor)
+   ========================================================================== */
+.hud-header {
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 8px 14px;
+}
+
+.universe-mode-tabs {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 11px;
+  padding: 3px;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.universe-tab {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.universe-tab:hover {
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.universe-tab.active[data-universe="nasa"] {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+.universe-tab.marvel-tab {
+  color: #fde68a;
+}
+
+.universe-tab.marvel-tab:hover {
+  background: rgba(217, 70, 239, 0.18);
+  color: #ffffff;
+}
+
+.universe-tab.active[data-universe="marvel"] {
+  background: linear-gradient(135deg, #a21caf, #d97706);
+  color: #ffffff;
+  border-color: #fbbf24;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+}
+
+body.light-mode .universe-mode-tabs {
+  background: rgba(241, 245, 249, 0.95);
+  border-color: rgba(100, 116, 139, 0.35);
+}
+
+body.light-mode .universe-tab {
+  color: #334155;
+}
+
+body.light-mode .universe-tab.marvel-tab {
+  color: #92400e;
+}
+
+body.light-mode .universe-tab.active[data-universe="marvel"] {
+  color: #ffffff;
+}
+
+/* Marvel Cosmic Theme Accents */
+body.marvel-mode .hud-header {
+  border-color: rgba(232, 121, 249, 0.42);
+  box-shadow: 0 4px 24px rgba(168, 85, 247, 0.18);
+}
+
+body.marvel-mode .scale-pill.active {
+  background: linear-gradient(135deg, rgba(162, 28, 175, 0.55), rgba(217, 119, 6, 0.45));
+  border-color: #fbbf24;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.32);
+}
+
+body.marvel-mode .scale-pill.active .scale-pill-num {
+  background: #fbbf24;
+  color: #1e1b4b;
+}
+
+body.marvel-mode .tracker-chip.active {
+  background: rgba(217, 70, 239, 0.28);
+  border-color: #fbbf24;
+  color: #ffffff;
+}
+
+/* Marvel Category Filter Bar inside Quick Tracker Bar */
+.marvel-cat-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 10px;
+  border-right: 1px solid rgba(148, 163, 184, 0.28);
+  flex-shrink: 0;
+}
+
+.marvel-cat-pill {
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(30, 41, 59, 0.78);
+  color: var(--text-secondary);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.marvel-cat-pill:hover,
+.marvel-cat-pill.active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(245, 158, 11, 0.3));
+  color: #fde68a;
+  border-color: #fbbf24;
+}
+
+body.light-mode .marvel-cat-pill {
+  background: rgba(241, 245, 249, 0.92);
+  color: #334155;
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+body.light-mode .marvel-cat-pill.active {
+  background: rgba(217, 119, 6, 0.18);
+  color: #92400e;
+  border-color: #d97706;
+}
+
+/* Marvel Lore vs. Real Astrophysics Box in Inspector */
+.marvel-science-box {
+  background: linear-gradient(135deg, rgba(88, 28, 135, 0.42), rgba(120, 53, 15, 0.38));
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  border-radius: 11px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.16);
+}
+
+.marvel-science-header {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fde68a;
+  margin-bottom: 5px;
+}
+
+.marvel-science-body {
+  font-size: 0.81rem;
+  line-height: 1.46;
+  color: #f8fafc;
+}
+
+body.light-mode .marvel-science-box {
+  background: linear-gradient(135deg, rgba(243, 232, 255, 0.92), rgba(254, 243, 199, 0.92));
+  border-color: rgba(147, 51, 234, 0.45);
+}
+
+body.light-mode .marvel-science-header {
+  color: #6b21a8;
+}
+
+body.light-mode .marvel-science-body {
+  color: #1e293b;
+}
+
+/* Inspector Header Actions & Mobile Collapse Toggle */
+.inspector-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.inspector-collapse-btn,
+.mobile-only-btn {
+  display: none;
+}
+
+@media (max-width: 1480px) and (min-width: 769px) {
+  .brand-subtitle {
+    display: none;
+  }
+  .scale-pill {
+    padding: 5px 9px;
+    gap: 6px;
+  }
+  .scale-pill-text small {
+    display: none;
+  }
+  .action-pill {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+  }
+}
+
+/* ==========================================================================
+   iPhone 16 Chrome (393 x 852 CSS px, iOS WebKit) & Mobile Responsive Layout
+   ========================================================================== */
+@media (max-width: 768px) {
+  :root {
+    --hud-header-bottom: 112px;
+    --tracker-bar-bottom: 150px;
+  }
+
+  .hud-header {
+    top: max(6px, env(safe-area-inset-top, 6px));
+    left: 8px;
+    right: 8px;
+    padding: 6px 8px;
+    gap: 5px;
+    border-radius: 12px;
+  }
+
+  .brand-cluster {
+    gap: 6px;
+  }
+
+  .brand-logo {
+    font-size: 1.2rem;
+  }
+
+  .brand-title {
+    font-size: 0.88rem;
+  }
+
+  .brand-subtitle,
+  #btn-toggle-theme,
+  #btn-toggle-panels {
+    display: none !important;
+  }
+
+  .universe-mode-tabs {
+    margin-left: auto;
+    padding: 2px;
+    gap: 2px;
+  }
+
+  .universe-tab {
+    padding: 4px 7px;
+    font-size: 0.68rem;
+  }
+
+  .scale-stepper {
+    order: 3;
+    width: 100%;
+    gap: 4px;
+    padding: 1px 0;
+    scrollbar-width: none;
+  }
+  .scale-stepper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scale-pill {
+    padding: 3px 7px;
+    gap: 4px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .scale-pill-num {
+    width: 17px;
+    height: 17px;
+    font-size: 0.65rem;
+  }
+
+  .scale-pill-text strong {
+    font-size: 0.68rem;
+  }
+
+  .scale-pill-text small {
+    display: none;
+  }
+
+  .header-actions {
+    order: 2;
+    width: 100%;
+    overflow-x: auto;
+    gap: 4px;
+    padding-bottom: 1px;
+    scrollbar-width: none;
+  }
+  .header-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .lang-switcher {
+    padding: 1px;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+
+  .lang-btn {
+    padding: 3px 5px;
+    font-size: 0.64rem;
+  }
+
+  .action-pill {
+    padding: 4px 8px;
+    font-size: 0.68rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .mobile-only-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Quick Tracker Bar below header with zero overlap */
+  .quick-tracker-bar {
+    top: var(--hud-header-bottom, 112px);
+    left: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    gap: 6px;
+    border-radius: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .quick-tracker-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .marvel-cat-bar {
+    gap: 3px;
+    padding-right: 6px;
+  }
+
+  .marvel-cat-pill {
+    padding: 3px 7px;
+    font-size: 0.66rem;
+  }
+
+  .tracker-label {
+    font-size: 0.68rem;
+  }
+
+  .tracker-chip {
+    padding: 3px 8px;
+    font-size: 0.68rem;
+  }
+
+  /* Left HUD Panel: keep Guided Tour visible on mobile & support mobile options drawer */
+  .hud-left-panel {
+    display: flex !important;
+    top: var(--tracker-bar-bottom, 150px);
+    left: 8px;
+    right: 8px;
+    width: auto;
+    z-index: 16;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .hud-left-panel .scale-card {
+    display: none;
+    padding: 10px 12px;
+  }
+
+  body.mobile-options-open .hud-left-panel .scale-card {
+    display: block;
+  }
+
+  .guided-tour-card {
+    padding: 10px 12px;
+  }
+
+  .tour-title {
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+  }
+
+  .tour-desc {
+    font-size: 0.75rem;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    max-height: 4.2em;
+    overflow-y: auto;
+  }
+
+  /* Collapsible Bottom-Sheet Inspector on Mobile (Peek ~54px by default) */
+  .hud-right-inspector {
+    top: auto;
+    left: 8px;
+    right: 8px;
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-height: 44dvh;
+    padding: 8px 12px;
+    border-radius: 12px;
+    z-index: 14;
+    transition: max-height 0.22s ease, padding 0.22s ease;
+  }
+
+  .inspector-collapse-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 7px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    background: rgba(56, 189, 248, 0.18);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(56, 189, 248, 0.42);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .hud-right-inspector .inspector-header {
+    margin-bottom: 2px;
+  }
+
+  .hud-right-inspector .inspector-badge {
+    padding: 2px 7px;
+    font-size: 0.65rem;
+  }
+
+  .hud-right-inspector .read-aloud-btn {
+    padding: 3px 8px;
+    font-size: 0.68rem;
+  }
+
+  .hud-right-inspector .inspector-title {
+    font-size: 0.96rem;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hud-right-inspector.is-collapsed-mobile {
+    max-height: 54px;
+    padding: 6px 10px;
+    overflow: hidden;
+  }
+
+  .hud-right-inspector.is-collapsed-mobile .inspector-pronounce,
+  .hud-right-inspector.is-collapsed-mobile .inspector-summary,
+  .hud-right-inspector.is-collapsed-mobile .marvel-science-box,
+  .hud-right-inspector.is-collapsed-mobile .voyager-live-box,
+  .hud-right-inspector.is-collapsed-mobile .exoplanet-box,
+  .hud-right-inspector.is-collapsed-mobile .section-subtitle,
+  .hud-right-inspector.is-collapsed-mobile .stats-grid,
+  .hud-right-inspector.is-collapsed-mobile .fun-facts-list,
+  .hud-right-inspector.is-collapsed-mobile .travel-times-box {
+    display: none !important;
+  }
+
+  /* Compact Bottom Time + Zoom Bar on Mobile */
+  .hud-bottom {
+    bottom: max(6px, env(safe-area-inset-bottom, 6px));
+    left: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+
+  .time-bar {
+    padding: 3px 8px;
+    gap: 4px;
+    border-radius: 9px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .time-btn {
+    padding: 3px 7px;
+    font-size: 0.74rem;
+  }
+
+  .time-readout {
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    padding: 0 4px;
+  }
+
+  .time-speed {
+    font-size: 0.66rem;
+  }
+
+  .time-date {
+    font-size: 0.66rem;
+  }
+
+  .hud-bottom-zoom {
+    padding: 5px 10px;
+    gap: 8px;
+    border-radius: 10px;
+  }
+
+  .zoom-step-btn {
+    padding: 4px 9px;
+    font-size: 0.72rem;
+  }
+
+  .zoom-scale-markers {
+    display: none;
+  }
+
+  /* Prevent iOS Safari/Chrome auto-zoom on input focus */
+  .exo-search-input {
+    font-size: 16px;
+    padding: 7px 10px;
+  }
+
+  .exo-controls-row {
+    flex-direction: column;
+  }
+
+  .modal-dialog {
+    padding: 14px;
+    max-height: 88dvh;
+    overflow-y: auto;
+  }
+}

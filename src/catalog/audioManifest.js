@@ -57,5 +57,48 @@ export const STUDIO_AUDIO_MANIFEST = {
   "tour_7": "assets/audio/tour_7.mp3",
   "tour_8": "assets/audio/tour_8.mp3",
   "tour_9": "assets/audio/tour_9.mp3",
-  "tour_10": "assets/audio/tour_10.mp3"
+  "tour_10": "assets/audio/tour_10.mp3",
+  "obj_benatar": "assets/audio/obj_benatar.mp3",
+  "obj_newAsgard": "assets/audio/obj_newAsgard.mp3",
+  "obj_asgard": "assets/audio/obj_asgard.mp3",
+  "obj_nidavellir": "assets/audio/obj_nidavellir.mp3",
+  "obj_jotunheim": "assets/audio/obj_jotunheim.mp3",
+  "obj_muspelheim": "assets/audio/obj_muspelheim.mp3",
+  "obj_knowhere": "assets/audio/obj_knowhere.mp3",
+  "obj_xandar": "assets/audio/obj_xandar.mp3",
+  "obj_morag": "assets/audio/obj_morag.mp3",
+  "obj_sovereign": "assets/audio/obj_sovereign.mp3",
+  "obj_counterEarth": "assets/audio/obj_counterEarth.mp3",
+  "obj_contraxia": "assets/audio/obj_contraxia.mp3",
+  "obj_sakaar": "assets/audio/obj_sakaar.mp3",
+  "obj_marvelTitan": "assets/audio/obj_marvelTitan.mp3",
+  "obj_vormir": "assets/audio/obj_vormir.mp3",
+  "obj_ego": "assets/audio/obj_ego.mp3",
+  "obj_hala": "assets/audio/obj_hala.mp3",
+  "obj_arishem": "assets/audio/obj_arishem.mp3",
+  "marvel_tour_0": "assets/audio/marvel_tour_0.mp3",
+  "marvel_tour_1": "assets/audio/marvel_tour_1.mp3",
+  "marvel_tour_2": "assets/audio/marvel_tour_2.mp3",
+  "marvel_tour_3": "assets/audio/marvel_tour_3.mp3",
+  "marvel_tour_4": "assets/audio/marvel_tour_4.mp3",
+  "marvel_tour_5": "assets/audio/marvel_tour_5.mp3",
+  "marvel_tour_6": "assets/audio/marvel_tour_6.mp3",
+  "marvel_tour_7": "assets/audio/marvel_tour_7.mp3",
+  "marvel_tour_8": "assets/audio/marvel_tour_8.mp3",
+  "marvel_tour_9": "assets/audio/marvel_tour_9.mp3"
 };
+
+const STUDIO_AUDIO_LANGS = new Set(['en', 'es', 'zh']);
+
+export function getStudioAudioUrl(key, lang = 'en') {
+  if (!STUDIO_AUDIO_LANGS.has(lang)) return null;
+  const basePath = STUDIO_AUDIO_MANIFEST[key];
+  if (!basePath) return null;
+  if (lang === 'es') {
+    return basePath.replace('assets/audio/', 'assets/audio/es/');
+  }
+  if (lang === 'zh') {
+    return basePath.replace('assets/audio/', 'assets/audio/zh/');
+  }
+  return basePath;
+}

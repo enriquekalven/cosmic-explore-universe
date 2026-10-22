@@ -3,17 +3,34 @@
  * Built with createElement/textContent only (no innerHTML) per the project's security rules.
  */
 
+import { getLabelName, translateLabelSub } from '../i18n.js';
+
 export class LabelLayer {
-  constructor(THREE, container, { onPick, onHover } = {}) {
+  constructor(THREE, container, { onPick, onHover, lang = 'en' } = {}) {
     this.THREE = THREE;
     this.container = container;
     this.onPick = onPick || (() => {});
     this.onHover = onHover || (() => {});
+    this.lang = lang;
     this.entries = new Map();
     this.enabled = true;
     this.focusedId = null;
     this._v = new THREE.Vector3();
     this._placed = [];
+  }
+
+  _flyToPrefix() {
+    const map = {
+      en: 'Fly to',
+      es: 'Volar a',
+      zh: '飞往',
+      ja: 'へ移動：',
+      ko: '이동:',
+      pt: 'Voar para',
+      fr: 'Voler vers',
+      it: 'Vola verso'
+    };
+    return map[this.lang] || 'Fly to';
   }
 
   add(def) {
@@ -22,7 +39,8 @@ export class LabelLayer {
     el.type = 'button';
     el.className = `cl cl-${def.kind || 'poi'}`;
     el.dataset.id = def.id;
-    el.setAttribute('aria-label', `Fly to ${def.name}`);
+    const localizedName = getLabelName(def.id, def.name, this.lang);
+    el.setAttribute('aria-label', `${this._flyToPrefix()} ${localizedName}`);
     const dot = document.createElement('span');
     dot.className = 'cl-dot';
     if (def.color) {
@@ -32,11 +50,11 @@ export class LabelLayer {
     const text = document.createElement('span');
     text.className = 'cl-text';
     const name = document.createElement('b');
-    name.textContent = def.name;
+    name.textContent = localizedName;
     text.appendChild(name);
     if (def.sub) {
       const sub = document.createElement('small');
-      sub.textContent = def.sub;
+      sub.textContent = translateLabelSub(def.sub, this.lang);
       text.appendChild(sub);
     }
     el.appendChild(dot);
@@ -51,9 +69,12 @@ export class LabelLayer {
     this.container.appendChild(el);
     const entry = {
       ...def,
+      rawName: def.name,
+      rawSub: def.sub || '',
       el,
       dot,
       text,
+      nameEl: name,
       visible: false,
       lastX: NaN,
       lastY: NaN,
@@ -68,12 +89,34 @@ export class LabelLayer {
   setSub(id, sub) {
     const e = this.entries.get(id);
     if (!e) return;
+    e.rawSub = sub;
     let small = e.text.querySelector('small');
     if (!small) {
       small = document.createElement('small');
       e.text.appendChild(small);
     }
-    small.textContent = sub;
+    small.textContent = translateLabelSub(sub, this.lang);
+    e.width = 0;
+  }
+
+  setLanguage(lang = 'en') {
+    this.lang = lang;
+    const prefix = this._flyToPrefix();
+    for (const e of this.entries.values()) {
+      const localizedName = getLabelName(e.id, e.rawName, this.lang);
+      if (e.nameEl) e.nameEl.textContent = localizedName;
+      e.el.setAttribute('aria-label', `${prefix} ${localizedName}`);
+      if (e.rawSub) {
+        let small = e.text.querySelector('small');
+        if (!small) {
+          small = document.createElement('small');
+          e.text.appendChild(small);
+        }
+        small.textContent = translateLabelSub(e.rawSub, this.lang);
+      }
+      e.width = 0;
+      e.height = 0;
+    }
   }
 
   remove(id) {
@@ -105,6 +148,10 @@ export class LabelLayer {
     const candidates = [];
     for (const e of this.entries.values()) {
       const d = e.def;
+      if (d.forceHidden) {
+        this._hide(e);
+        continue;
+      }
       let alpha = d.alphaOverride != null ? d.alphaOverride : d.alpha ? d.alpha(zoom) : 1;
       if (e.id === this.focusedId) alpha = Math.max(alpha, 0.95);
       if (alpha <= 0.02) {
