@@ -1,3 +1,7 @@
+// Copyright 2026 Google. This software is provided as-is, without warranty or
+// representation for any use or purpose. Your use of it is subject to your
+// agreement with Google.
+
 /**
  * solarSystemData.js — physical data for the Sun, planets, major moons, dwarf planets and probes.
  * Radii are in Earth radii; moon orbits in planet radii (true values); textures are the files in
@@ -114,6 +118,11 @@ export const PLANETS = [
   }
 ];
 
+/**
+ * The five IAU-recognized dwarf planets. `stats` feeds the inspector panel (describe.js):
+ * distanceAU = semi-major axis, yearYears = orbital period, discovered = year of discovery,
+ * moons = number of known moons (JPL SBDB / IAU, checked 2026-11).
+ */
 export const DWARF_PLANETS = [
   {
     id: 'pluto',
@@ -121,7 +130,8 @@ export const DWARF_PLANETS = [
     radius: 0.1868,
     rotation: 'pluto',
     color: '#d7b89c',
-    procedural: { kind: 'rocky', base: '#d9bb9d', accent: '#6e4a3a', craters: 0.3, heart: true }
+    procedural: { kind: 'rocky', base: '#d9bb9d', accent: '#6e4a3a', craters: 0.3, heart: true },
+    stats: { distanceAU: 39.5, yearYears: 248, discovered: 1930, moons: 5 }
   },
   {
     id: 'ceres',
@@ -129,7 +139,8 @@ export const DWARF_PLANETS = [
     radius: 0.0742,
     rotation: 'ceres',
     color: '#9b958d',
-    procedural: { kind: 'rocky', base: '#8d8781', accent: '#4e4a46', craters: 1.0 }
+    procedural: { kind: 'rocky', base: '#8d8781', accent: '#4e4a46', craters: 1.0 },
+    stats: { distanceAU: 2.77, yearYears: 4.6, discovered: 1801, moons: 0 }
   },
   {
     id: 'eris',
@@ -137,7 +148,29 @@ export const DWARF_PLANETS = [
     radius: 0.1825,
     rotation: 'eris',
     color: '#e8e8ea',
-    procedural: { kind: 'icy', base: '#eceef2', accent: '#b9bcc6', craters: 0.2 }
+    procedural: { kind: 'icy', base: '#eceef2', accent: '#b9bcc6', craters: 0.2 },
+    stats: { distanceAU: 67.9, yearYears: 559, discovered: 2005, moons: 1 }
+  },
+  {
+    // Egg-shaped (~2,100 × 1,680 × 1,070 km) from its 3.9-hour spin; thin ring found in 2017.
+    id: 'haumea',
+    name: 'Haumea',
+    radius: 0.1224,
+    triaxial: [1.346, 0.689, 1.077],
+    rings: { inner: 2.82, outer: 2.91, procedural: true, opacity: 0.45 },
+    rotation: 'haumea',
+    color: '#f1f0ec',
+    procedural: { kind: 'icy', base: '#f3f2ee', accent: '#9a6b5c', craters: 0.15 },
+    stats: { distanceAU: 43.1, yearYears: 283, discovered: 2004, moons: 2 }
+  },
+  {
+    id: 'makemake',
+    name: 'Makemake',
+    radius: 0.1122,
+    rotation: 'makemake',
+    color: '#c69c7a',
+    procedural: { kind: 'icy', base: '#c9a27f', accent: '#8a5a3e', craters: 0.2 },
+    stats: { distanceAU: 45.6, yearYears: 308, discovered: 2005, moons: 1 }
   }
 ];
 

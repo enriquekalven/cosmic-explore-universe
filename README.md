@@ -1,5 +1,9 @@
 # 🚀 Cosmic Explorer 3D
 
+Copyright 2026 Google. This software is provided as-is, without warranty or representation for any use or purpose. Your use of it is subject to your agreement with Google.
+
+---
+
 **A free, open, photoreal 3D journey from Earth & the Moon to Starman's Tesla Roadster, the Voyager probes, all 6,451 confirmed NASA Exoplanets, the Milky Way, and the edge of the observable universe — built for curious kids.**
 
 🌐 **Live Web App:** **[https://cosmic-explorer-universe.web.app](https://cosmic-explorer-universe.web.app)**
@@ -13,7 +17,7 @@ Everything is real data: NASA & ESO imagery, JPL orbital elements for today's da
 | Scale | What you see |
 |---|---|
 | **🌍 Earth & Moon** | NASA Blue Marble surface, Black Marble city lights on the real night side, cloud layer, ocean sun-glint, atmosphere; the Moon at its true distance with tonight's real phase; the ISS in a 51.6° orbit |
-| **☀️ Solar System & Probes** | Sun with corona, all 8 planets textured & lit, Saturn's rings with the planet's shadow, Jupiter's & Saturn's big moons, Pluto/Ceres/Eris, Halley's comet, asteroid & Kuiper belts, **Starman's Tesla Roadster (`2018-017A`)** on its Mars-crossing heliocentric orbit, and **Voyager 1 & 2** with their real flyby paths and live distances |
+| **☀️ Solar System & Probes** | Sun with corona, all 8 planets textured & lit, Saturn's rings with the planet's shadow, Jupiter's & Saturn's big moons, all 5 dwarf planets (Ceres, Pluto, Haumea with its ring, Makemake, Eris), Halley's comet, asteroid & Kuiper belts, **Starman's Tesla Roadster (`2018-017A`)** on its Mars-crossing heliocentric orbit, and **Voyager 1 & 2** with their real flyby paths and live distances |
 | **⭐ Nearby Stars & All 6,451 NASA Exoplanets** | The real night sky (ESO Milky Way panorama in galactic coordinates), **all 6,451 confirmed exoplanets across 4,847 host star systems** (including **152 habitable-zone candidates**) plotted at true 3D RA/Dec & Gaia distances, plus on-demand 3D star/planet system materialization, habitable zones, binary companions, debris disks, nebulae & clusters |
 | **🌌 Milky Way** | A structured barred spiral (Scutum–Centaurus, Perseus, Sagittarius & Outer arms, Orion Spur, dust lanes, HII regions, bulge, halo) oriented with the real galactic frame; Sagittarius A*; "you are here" |
 | **🕸️ Universe** | Andromeda, Triangulum, the Magellanic Clouds and ~40 real galaxies/clusters at true positions, the cosmic web of filaments and voids, and the cosmic microwave background sphere |
