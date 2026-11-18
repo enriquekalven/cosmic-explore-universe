@@ -1,3 +1,7 @@
+// Copyright 2026 Google. This software is provided as-is, without warranty or
+// representation for any use or purpose. Your use of it is subject to your
+// agreement with Google.
+
 /**
  * SolarSystemStage — the Sun, planets, major moons, dwarf planets, Halley's comet, asteroid &
  * Kuiper belts, Jupiter's Trojans, the heliosphere, and Voyager 1 & 2 with their real flyby paths.
@@ -150,8 +154,8 @@ export class SolarSystemStage {
         color: d.color,
         priority: 4,
         getWorldPos: (o) => o.copy(entry.pos),
-        radius: () => d.radius,
-        viewDistance: () => d.radius * 5,
+        radius: () => d.radius * (d.rings ? d.rings.outer : 1),
+        viewDistance: () => d.radius * (d.rings ? 7.5 : 5),
         alpha: (z) => bandFade(z, 20, 26, 50, 56),
         pick: [entry.body.mesh]
       });
@@ -177,11 +181,12 @@ export class SolarSystemStage {
     // ---------------- Orbit lines
     this.orbitLines = [];
     const orbitIds = [...PLANETS.map((p) => p.id), ...DWARF_PLANETS.map((d) => d.id), ...COMETS.map((c) => c.id), 'roadster'];
+    const kuiperDwarfs = new Set(DWARF_PLANETS.filter((d) => d.id !== 'ceres').map((d) => d.id));
     for (const id of orbitIds) {
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(257 * 3), 3));
-      const darkColor = id === 'roadster' ? 0xf43f5e : id === 'halley' ? 0x7dd3fc : id === 'pluto' || id === 'eris' ? 0xb8a9d9 : 0x9fb3cf;
-      const lightColor = id === 'roadster' ? 0xe11d48 : id === 'halley' ? 0x0284c7 : id === 'pluto' || id === 'eris' ? 0x6d28d9 : 0x1d4ed8;
+      const darkColor = id === 'roadster' ? 0xf43f5e : id === 'halley' ? 0x7dd3fc : kuiperDwarfs.has(id) ? 0xb8a9d9 : 0x9fb3cf;
+      const lightColor = id === 'roadster' ? 0xe11d48 : id === 'halley' ? 0x0284c7 : kuiperDwarfs.has(id) ? 0x6d28d9 : 0x1d4ed8;
       const baseOpacity = id === 'roadster' ? 0.72 : 0.36;
       const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: darkColor, transparent: true, opacity: baseOpacity, depthWrite: false }));
       line.frustumCulled = false;

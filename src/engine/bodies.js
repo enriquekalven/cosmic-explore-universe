@@ -1,3 +1,7 @@
+// Copyright 2026 Google. This software is provided as-is, without warranty or
+// representation for any use or purpose. Your use of it is subject to your
+// agreement with Google.
+
 /**
  * bodies.js — builds textured, physically-lit spherical bodies (planets, moons, exoplanets) with
  * optional atmosphere shells, rings and ring shadows, and keeps their orientation & lighting updated.
@@ -42,7 +46,7 @@ export class BodyFactory {
 
   /**
    * spec: { id, radius, texture?, procedural?, haze?, atmosphere?, limb?, rings?, rotation?,
-   *         oblateness?, ambient?, exposure?, color?, faceParent? }
+   *         oblateness?, triaxial? ([x, y(pole), z] scale), ambient?, exposure?, color?, faceParent? }
    */
   create(spec, { quality = 'mid', seed = 1 } = {}) {
     const THREE = this.THREE;
@@ -71,7 +75,8 @@ export class BodyFactory {
     const geo = quality === 'hi' ? this.sphereHi : quality === 'low' ? this.sphereLow : this.sphereMid;
     const mesh = new THREE.Mesh(geo, material);
     mesh.name = `${spec.id}-surface`;
-    if (spec.oblateness) mesh.scale.set(1, 1 - spec.oblateness, 1);
+    if (spec.triaxial) mesh.scale.set(...spec.triaxial);
+    else if (spec.oblateness) mesh.scale.set(1, 1 - spec.oblateness, 1);
     spin.add(mesh);
 
     const body = {

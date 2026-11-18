@@ -1,3 +1,7 @@
+// Copyright 2026 Google. This software is provided as-is, without warranty or
+// representation for any use or purpose. Your use of it is subject to your
+// agreement with Google.
+
 /**
  * describe.js — generates kid-friendly inspector content for catalog objects that don't have
  * hand-written entries in cosmicData.js (stars, exoplanets, moons, galaxies, structures…)
@@ -1178,7 +1182,9 @@ export function describeSolarBody(id, lang = 'en') {
       enceladus: 'Enceladus shoots geysers of water ice into space from a hidden ocean — NASA’s Cassini flew right through them.',
       pluto: 'Pluto has a giant heart-shaped glacier of nitrogen ice named Tombaugh Regio.',
       ceres: 'Ceres is the largest object in the asteroid belt and has bright salty spots in its craters.',
-      eris: 'Eris is slightly smaller than Pluto but more massive — its discovery in 2005 led to the “dwarf planet” category.'
+      eris: 'Eris is slightly smaller than Pluto but more massive — its discovery in 2005 led to the “dwarf planet” category.',
+      haumea: 'Haumea spins so fast — one day lasts just 3.9 hours — that it has stretched into an egg shape, and it even has its own thin ring!',
+      makemake: 'Makemake was found just after Easter 2005, so its discoverers nicknamed it “Easterbunny” before naming it after the creator god of Rapa Nui (Easter Island).'
     },
     es: {
       io: '¡Ío es el lugar con más volcanes del Sistema Solar: cientos de volcanes lanzan azufre a 400 km de altura!',
@@ -1189,7 +1195,9 @@ export function describeSolarBody(id, lang = 'en') {
       enceladus: 'Encélado lanza géiseres de hielo de agua al espacio desde un océano oculto; la sonda Cassini de la NASA voló a través de ellos.',
       pluto: 'Plutón tiene un glaciar gigante de hielo de nitrógeno con forma de corazón llamado Tombaugh Regio.',
       ceres: 'Ceres es el objeto más grande del cinturón de asteroides y tiene manchas brillantes de sal en sus cráteres.',
-      eris: 'Eris es un poco más pequeño que Plutón pero más masivo: su hallazgo en 2005 llevó a crear la categoría de "planeta enano".'
+      eris: 'Eris es un poco más pequeño que Plutón pero más masivo: su hallazgo en 2005 llevó a crear la categoría de "planeta enano".',
+      haumea: '¡Haumea gira tan rápido (un día dura solo 3,9 horas) que se ha estirado en forma de huevo, y hasta tiene su propio anillo delgado!',
+      makemake: 'Makemake se descubrió justo después de la Pascua de 2005; por eso lo apodaron “Conejo de Pascua” antes de darle el nombre del dios creador de Rapa Nui (Isla de Pascua).'
     },
     zh: {
       io: '木卫一（伊奥）是太阳系火山活动最剧烈的星球——数百座活火山将硫磺喷发到 400 公里高空！',
@@ -1200,8 +1208,40 @@ export function describeSolarBody(id, lang = 'en') {
       enceladus: '土卫二（恩克拉多斯）从地下海洋向太空喷射出高耸的水冰间歇泉——NASA 卡西尼号飞船曾直接穿过这些羽流采样。',
       pluto: '冥王星表面有一片巨大的心形氮冰冰川，名为“汤博区”（冥王星之心）。',
       ceres: '谷神星是主小行星带中最大的天体，也是唯一位于内太阳系的矮行星，陨石坑内有明亮的盐斑。',
-      eris: '阋神星体积略小于冥王星但质量更大——2005年它的发现促使天文学家正式定义了“矮行星”分类。'
+      eris: '阋神星体积略小于冥王星但质量更大——2005年它的发现促使天文学家正式定义了“矮行星”分类。',
+      haumea: '妊神星自转极快——一天只有 3.9 小时——因此被甩成了鸡蛋形状，它甚至还拥有一圈细细的光环！',
+      makemake: '鸟神星发现于 2005 年复活节后不久，因此曾被昵称为“复活节兔子”，后以复活节岛（拉帕努伊）的创世神命名。'
     }
+  };
+
+  // Dwarf planets carry extra real stats (distance, year length, discovery, moons).
+  const s = b.stats;
+  const yearsTxt = (y) => (y < 10 ? y.toFixed(1) : formatNumber(y, 0));
+  const dwarfStats = {
+    en: s
+      ? [
+          { label: 'Distance from Sun', value: `${s.distanceAU} AU (average)` },
+          { label: 'Year length', value: `${yearsTxt(s.yearYears)} Earth years` },
+          { label: 'Discovered', value: String(s.discovered) },
+          { label: 'Known moons', value: String(s.moons) }
+        ]
+      : [],
+    es: s
+      ? [
+          { label: 'Distancia al Sol', value: `${s.distanceAU} UA (promedio)` },
+          { label: 'Duración del año', value: `${yearsTxt(s.yearYears)} años terrestres` },
+          { label: 'Descubierto', value: String(s.discovered) },
+          { label: 'Lunas conocidas', value: String(s.moons) }
+        ]
+      : [],
+    zh: s
+      ? [
+          { label: '与太阳的距离', value: `平均 ${s.distanceAU} 天文单位` },
+          { label: '一年的长度', value: `${yearsTxt(s.yearYears)} 个地球年` },
+          { label: '发现年份', value: `${s.discovered} 年` },
+          { label: '已知卫星', value: `${s.moons} 颗` }
+        ]
+      : []
   };
 
   if (l === 'es') {
@@ -1215,7 +1255,8 @@ export function describeSolarBody(id, lang = 'en') {
         : `${localName} es un planeta enano de unos ${diamKm} km de diámetro.`,
       quickStats: [
         { label: 'Diámetro', value: `${diamKm} km (${pctEarth}% de la Tierra)` },
-        ...(b.periodDays ? [{ label: 'Período orbital', value: `${b.periodDays.toFixed(2)} días` }] : [])
+        ...(b.periodDays ? [{ label: 'Período orbital', value: `${b.periodDays.toFixed(2)} días` }] : []),
+        ...dwarfStats.es
       ],
       funFacts: [factsByLang.es[id] || 'Un fascinante mundo pequeño de nuestro Sistema Solar.'],
       travelTimes: {},
@@ -1234,7 +1275,8 @@ export function describeSolarBody(id, lang = 'en') {
         : `${localName} 是一颗直径约 ${diamKm} 公里的矮行星。`,
       quickStats: [
         { label: '直径', value: `${diamKm} 公里（地球的 ${pctEarth}%）` },
-        ...(b.periodDays ? [{ label: '公转周期', value: `${b.periodDays.toFixed(2)} 天` }] : [])
+        ...(b.periodDays ? [{ label: '公转周期', value: `${b.periodDays.toFixed(2)} 天` }] : []),
+        ...dwarfStats.zh
       ],
       funFacts: [factsByLang.zh[id] || '太阳系中一颗奇妙的小型星球。'],
       travelTimes: {},
@@ -1252,7 +1294,8 @@ export function describeSolarBody(id, lang = 'en') {
       : `${localName} is a dwarf planet about ${diamKm} km across.`,
     quickStats: [
       { label: 'Diameter', value: `${diamKm} km (${pctEarth}% of Earth)` },
-      ...(b.periodDays ? [{ label: 'Orbit period', value: `${b.periodDays.toFixed(2)} days` }] : [])
+      ...(b.periodDays ? [{ label: 'Orbit period', value: `${b.periodDays.toFixed(2)} days` }] : []),
+      ...dwarfStats.en
     ],
     funFacts: [factsByLang.en[id] || 'A fascinating small world.'],
     travelTimes: {},
@@ -1290,7 +1333,7 @@ function describeMisc(id, lang = 'en') {
         name: 'Cinturón de Kuiper',
         category: 'Anillo helado más allá de Neptuno',
         badge: '🧊 Hogar de Plutón',
-        kidSummary: 'Una inmensa rosquilla de cuerpos helados más allá de Neptuno, de 30 a 50 UA del Sol. Aquí viven Plutón, Eris y muchos cometas.',
+        kidSummary: 'Una inmensa rosquilla de cuerpos helados más allá de Neptuno, de 30 a 50 UA del Sol. Aquí viven Plutón, Haumea, Makemake, Eris y muchos cometas.',
         quickStats: [{ label: 'Ubicación', value: '30 – 50 UA del Sol' }, { label: 'Visitado por', value: 'New Horizons de la NASA (Plutón 2015, Arrokoth 2019)' }],
         funFacts: ['El Cinturón de Kuiper es 20 veces más ancho y hasta 200 veces más masivo que el cinturón de asteroides.']
       },
@@ -1437,7 +1480,7 @@ function describeMisc(id, lang = 'en') {
       name: 'Kuiper Belt',
       category: 'Icy ring beyond Neptune',
       badge: '🧊 Home of Pluto',
-      kidSummary: 'A vast doughnut of icy bodies beyond Neptune, 30 to 50 AU from the Sun. Pluto, Eris and many comets live here.',
+      kidSummary: 'A vast doughnut of icy bodies beyond Neptune, 30 to 50 AU from the Sun. Pluto, Haumea, Makemake, Eris and many comets live here.',
       quickStats: [{ label: 'Location', value: '30 – 50 AU from the Sun' }, { label: 'Visited by', value: 'NASA’s New Horizons (Pluto 2015, Arrokoth 2019)' }],
       funFacts: ['The Kuiper Belt is 20 times wider and up to 200 times more massive than the asteroid belt.']
     },

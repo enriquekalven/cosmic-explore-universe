@@ -1,3 +1,7 @@
+// Copyright 2026 Google. This software is provided as-is, without warranty or
+// representation for any use or purpose. Your use of it is subject to your
+// agreement with Google.
+
 /**
  * astro.js — Real astronomy math for Cosmic Explorer 3D.
  *
@@ -171,6 +175,9 @@ export const PLANET_ELEMENTS = {
 export const SMALL_BODY_ELEMENTS = {
   ceres: { a: 2.7675, e: 0.0758, i: 10.594, O: 80.305, w: 73.597, M0: 7.4, n: 0.21408 },
   eris: { a: 67.864, e: 0.4361, i: 44.04, O: 35.95, w: 151.64, M0: 205.99, n: 0.001763 },
+  // JPL SBDB (epoch JD 2461200.5), mean anomaly propagated back to J2000.
+  haumea: { a: 43.0603, e: 0.19444, i: 28.2085, O: 121.786, w: 240.691, M0: 189.531, n: 0.0034881 },
+  makemake: { a: 45.5709, e: 0.15889, i: 29.0279, O: 79.2948, w: 297.092, M0: 139.003, n: 0.0032039 },
   halley: { a: 17.834, e: 0.96714, i: 162.26, O: 58.42, w: 111.33, M0: 66.44, n: 0.0130956 },
   roadster: { a: 1.32491, e: 0.25575, i: 1.0775, O: 317.09, w: 177.49, M0: 84.3, n: 0.64628 }
 };
@@ -334,6 +341,8 @@ export const BODY_ROTATION = {
   pluto: { ra: 132.993, dec: -6.163, W0: 302.695, Wd: 56.3625225 },
   ceres: { ra: 291.4, dec: 66.8, W0: 170.9, Wd: 952.1532 },
   eris: { ra: 0, dec: 90, W0: 0, Wd: 13.84 },
+  haumea: { ra: 0, dec: 90, W0: 0, Wd: 2206.67 }, // 3.9154 h spin (pole not well constrained)
+  makemake: { ra: 0, dec: 90, W0: 0, Wd: 378.5 }, // 22.8266 h spin
   io: { ra: 268.05, dec: 64.5, W0: 200.39, Wd: 203.4889538 },
   europa: { ra: 268.08, dec: 64.51, W0: 36.022, Wd: 101.3747235 },
   ganymede: { ra: 268.2, dec: 64.57, W0: 44.064, Wd: 50.3176081 },

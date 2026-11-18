@@ -1,3 +1,7 @@
+// Copyright 2026 Google. This software is provided as-is, without warranty or
+// representation for any use or purpose. Your use of it is subject to your
+// agreement with Google.
+
 /**
  * i18n.js — 8-language localization (`en`, `es`, `zh`, `ja`, `ko`, `pt`, `fr`, `it`)
  * for Cosmic Explorer 3D UI, NASA & Guardians of the Galaxy scales, objects, guided tours, quizzes, and 3D labels.
@@ -663,8 +667,13 @@ export const QUICK_TARGETS_I18N = {
     { id: 'iss', label: '🛰️ Space Station' },
     { id: 'roadster', label: '🚗 Tesla Roadster' },
     { id: 'mars', label: '🔴 Mars' },
+    { id: 'ceres', label: '🪨 Ceres' },
     { id: 'jupiter', label: '🌪️ Jupiter' },
     { id: 'saturn', label: '🪐 Saturn' },
+    { id: 'pluto', label: '🤍 Pluto' },
+    { id: 'haumea', label: '🥚 Haumea' },
+    { id: 'makemake', label: '🐰 Makemake' },
+    { id: 'eris', label: '❄️ Eris' },
     { id: 'voyager1', label: '📡 Voyager 1' },
     { id: 'voyager2', label: '🛸 Voyager 2' },
     { id: 'proximaCentauri', label: '⭐ Proxima b' },
@@ -682,8 +691,13 @@ export const QUICK_TARGETS_I18N = {
     { id: 'iss', label: '🛰️ Estación Espacial' },
     { id: 'roadster', label: '🚗 Tesla Roadster' },
     { id: 'mars', label: '🔴 Marte' },
+    { id: 'ceres', label: '🪨 Ceres' },
     { id: 'jupiter', label: '🌪️ Júpiter' },
     { id: 'saturn', label: '🪐 Saturno' },
+    { id: 'pluto', label: '🤍 Plutón' },
+    { id: 'haumea', label: '🥚 Haumea' },
+    { id: 'makemake', label: '🐰 Makemake' },
+    { id: 'eris', label: '❄️ Eris' },
     { id: 'voyager1', label: '📡 Voyager 1' },
     { id: 'voyager2', label: '🛸 Voyager 2' },
     { id: 'proximaCentauri', label: '⭐ Próxima b' },
@@ -701,8 +715,13 @@ export const QUICK_TARGETS_I18N = {
     { id: 'iss', label: '🛰️ 国际空间站' },
     { id: 'roadster', label: '🚗 特斯拉跑车' },
     { id: 'mars', label: '🔴 火星' },
+    { id: 'ceres', label: '🪨 谷神星' },
     { id: 'jupiter', label: '🌪️ 木星' },
     { id: 'saturn', label: '🪐 土星' },
+    { id: 'pluto', label: '🤍 冥王星' },
+    { id: 'haumea', label: '🥚 妊神星' },
+    { id: 'makemake', label: '🐰 鸟神星' },
+    { id: 'eris', label: '❄️ 阋神星' },
     { id: 'voyager1', label: '📡 旅行者1号' },
     { id: 'voyager2', label: '🛸 旅行者2号' },
     { id: 'proximaCentauri', label: '⭐ 比邻星 b' },
@@ -742,6 +761,8 @@ export const LABEL_NAMES_I18N = {
     pluto: 'Plutón',
     ceres: 'Ceres',
     eris: 'Eris',
+    haumea: 'Haumea',
+    makemake: 'Makemake',
     halley: 'Cometa Halley',
     roadster: 'Tesla Roadster de Starman',
     asteroidBelt: 'Cinturón de Asteroides',
@@ -857,6 +878,8 @@ export const LABEL_NAMES_I18N = {
     pluto: '冥王星',
     ceres: '谷神星',
     eris: '阋神星',
+    haumea: '妊神星',
+    makemake: '鸟神星',
     halley: '哈雷彗星',
     roadster: '“太空人”的特斯拉跑车',
     asteroidBelt: '主小行星带',
